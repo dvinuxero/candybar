@@ -1,0 +1,15 @@
+BaseDeDatos/bin
+BaseDeDatos/obj
+Ejemplo1/bin
+Ejemplo1/obj
+EntidadesDTO/bin
+EntidadesDTO/obj
+Exceptions/bin
+Exceptions/obj
+NegocioYSeguridad/bin
+NegocioYSeguridad/obj
+packages
+*.user
+*.suo
+_ReSharper.*
+*.sln.cache
