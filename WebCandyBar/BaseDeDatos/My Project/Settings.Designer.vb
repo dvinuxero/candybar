@@ -56,9 +56,7 @@ Namespace My
         
         <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=aa1sqw96qg49h80.cleidzuugjf7.us-west-2.rds.amazonaws.com,1433;Network"& _ 
-            " Library=DBMSSOCN;Initial Catalog=candybar;User ID=candybar;Password=Ml34318438;"& _ 
-            "")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("xxx")>  _
         Public ReadOnly Property StringDeConexion() As String
             Get
                 Return CType(Me("StringDeConexion"),String)

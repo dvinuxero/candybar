@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="StringDeConexion" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Data Source=aa1sqw96qg49h80.cleidzuugjf7.us-west-2.rds.amazonaws.com,1433;Network Library=DBMSSOCN;Initial Catalog=candybar;User ID=candybar;Password=Ml34318438;</Value>
+      <Value Profile="(Default)">xxx</Value>
     </Setting>
   </Settings>
 </SettingsFile>
