@@ -147,8 +147,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.aspx" />
+    <Content Include="Account\Backup.aspx" />
     <Content Include="Account\Combos.aspx" />
+    <Content Include="Account\Contrasenias.aspx" />
+    <Content Include="Account\Familias.aspx" />
+    <Content Include="Account\Insumos.aspx" />
     <Content Include="Account\Login.aspx" />
+    <Content Include="Account\Pedidos.aspx" />
+    <Content Include="Account\Restaurar.aspx" />
+    <Content Include="Account\Usuarios.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
@@ -254,11 +261,60 @@
     <Content Include="Bundle.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Account\Backup.aspx.designer.vb">
+      <DependentUpon>Backup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\Backup.aspx.vb">
+      <DependentUpon>Backup.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
     <Compile Include="Account\Combos.aspx.designer.vb">
       <DependentUpon>Combos.aspx</DependentUpon>
     </Compile>
     <Compile Include="Account\Combos.aspx.vb">
       <DependentUpon>Combos.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Account\Contrasenias.aspx.designer.vb">
+      <DependentUpon>Contrasenias.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\Contrasenias.aspx.vb">
+      <DependentUpon>Contrasenias.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Account\Familias.aspx.designer.vb">
+      <DependentUpon>Familias.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\Familias.aspx.vb">
+      <DependentUpon>Familias.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Account\Insumos.aspx.designer.vb">
+      <DependentUpon>Insumos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\Insumos.aspx.vb">
+      <DependentUpon>Insumos.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Account\Pedidos.aspx.designer.vb">
+      <DependentUpon>Pedidos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\Pedidos.aspx.vb">
+      <DependentUpon>Pedidos.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Account\Restaurar.aspx.designer.vb">
+      <DependentUpon>Restaurar.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\Restaurar.aspx.vb">
+      <DependentUpon>Restaurar.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Account\Usuarios.aspx.designer.vb">
+      <DependentUpon>Usuarios.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\Usuarios.aspx.vb">
+      <DependentUpon>Usuarios.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
     <Compile Include="App_Start\BundleConfig.vb" />

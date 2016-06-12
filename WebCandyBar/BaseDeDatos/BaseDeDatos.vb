@@ -7,7 +7,7 @@ Public Class BaseDeDatos
     Private Shared conexion As SqlConnection
 
     'sql commands cacheados para poder ejecutar los updates de dvh contra la base de datos
-    'Private Shared updateCommandsPorTabla As Dictionary(Of String, SqlCommand)
+    Private Shared updateCommandsPorTabla As Dictionary(Of String, SqlCommand)
 
     Public Shared Function obtenerStringConexion() As String
         Return My.Settings.StringDeConexion
@@ -23,42 +23,42 @@ Public Class BaseDeDatos
                 conexion = New SqlConnection(stringConexion)
             End If
 
-            'updateCommandsPorTabla = New Dictionary(Of String, SqlCommand)
-            ''tabla familia_patente
-            'Dim updCommandFamiliaPatente = New SqlCommand("update familia_patente set dvh = @dvh WHERE patente_id = @patente_id and familia_id = @familia_id", conexion)
-            'updCommandFamiliaPatente.Parameters.Add("@dvh", SqlDbType.BigInt, 8, "dvh")
-            'updCommandFamiliaPatente.Parameters.Add("@familia_id", SqlDbType.VarChar, 30, "familia_id")
-            'updCommandFamiliaPatente.Parameters.Add("@patente_id", SqlDbType.VarChar, 30, "patente_id")
-            'updateCommandsPorTabla.Add("familia_patente", updCommandFamiliaPatente)
-            ''tabla usuario_patente
-            'Dim updCommandUsuarioPatente = New SqlCommand("update usuario_patente set dvh = @dvh WHERE usuario_id = @usuario_id and patente_id = @patente_id", conexion)
-            'updCommandUsuarioPatente.Parameters.Add("@dvh", SqlDbType.BigInt, 8, "dvh")
-            'updCommandUsuarioPatente.Parameters.Add("@usuario_id", SqlDbType.Int, 4, "usuario_id")
-            'updCommandUsuarioPatente.Parameters.Add("@patente_id", SqlDbType.VarChar, 30, "patente_id")
-            'updCommandUsuarioPatente.Parameters.Add("@negado", SqlDbType.VarChar, 10, "negado")
-            'updateCommandsPorTabla.Add("usuario_patente", updCommandUsuarioPatente)
-            ''tabla bitacora
-            'Dim updCommandBitacora = New SqlCommand("update bitacora set dvh = @dvh WHERE id = @id and usuario_id = @usuario_id and fecha = @fecha and descripcion = @descripcion and nivel_criticidad = @nivel_criticidad", conexion)
-            'updCommandBitacora.Parameters.Add("@dvh", SqlDbType.BigInt, 8, "dvh")
-            'updCommandBitacora.Parameters.Add("@id", SqlDbType.Int, 4, "id")
-            'updCommandBitacora.Parameters.Add("@usuario_id", SqlDbType.Int, 4, "usuario_id")
-            'updCommandBitacora.Parameters.Add("@fecha", SqlDbType.DateTime, 8, "fecha")
-            'updCommandBitacora.Parameters.Add("@descripcion", SqlDbType.VarChar, 120, "descripcion")
-            'updCommandBitacora.Parameters.Add("@nivel_criticidad", SqlDbType.VarChar, 10, "nivel_criticidad")
-            'updateCommandsPorTabla.Add("bitacora", updCommandBitacora)
-            ''tabla insumo
-            'Dim updCommandInsumo = New SqlCommand("update insumo set dvh = @dvh WHERE nombre = @nombre and precio_unidad = @precio_unidad and stock = @stock", conexion)
-            'updCommandInsumo.Parameters.Add("@dvh", SqlDbType.BigInt, 8, "dvh")
-            'updCommandInsumo.Parameters.Add("@nombre", SqlDbType.VarChar, 160, "nombre")
-            'updCommandInsumo.Parameters.Add("@precio_unidad", SqlDbType.VarChar, 40, "precio_unidad")
-            'updCommandInsumo.Parameters.Add("@stock", SqlDbType.VarChar, 40, "stock")
-            'updateCommandsPorTabla.Add("insumo", updCommandInsumo)
-            ''tabla combo
-            'Dim updCommandCombo = New SqlCommand("update combo set dvh = @dvh WHERE nombre = @nombre and precio = @precio", conexion)
-            'updCommandCombo.Parameters.Add("@dvh", SqlDbType.BigInt, 8, "dvh")
-            'updCommandCombo.Parameters.Add("@nombre", SqlDbType.VarChar, 400, "nombre")
-            'updCommandCombo.Parameters.Add("@precio", SqlDbType.VarChar, 40, "precio")
-            'updateCommandsPorTabla.Add("combo", updCommandCombo)
+            updateCommandsPorTabla = New Dictionary(Of String, SqlCommand)
+            'tabla familia_patente
+            Dim updCommandFamiliaPatente = New SqlCommand("update familia_patente set dvh = @dvh WHERE patente_id = @patente_id and familia_id = @familia_id", conexion)
+            updCommandFamiliaPatente.Parameters.Add("@dvh", SqlDbType.BigInt, 8, "dvh")
+            updCommandFamiliaPatente.Parameters.Add("@familia_id", SqlDbType.VarChar, 30, "familia_id")
+            updCommandFamiliaPatente.Parameters.Add("@patente_id", SqlDbType.VarChar, 30, "patente_id")
+            updateCommandsPorTabla.Add("familia_patente", updCommandFamiliaPatente)
+            'tabla usuario_patente
+            Dim updCommandUsuarioPatente = New SqlCommand("update usuario_patente set dvh = @dvh WHERE usuario_id = @usuario_id and patente_id = @patente_id", conexion)
+            updCommandUsuarioPatente.Parameters.Add("@dvh", SqlDbType.BigInt, 8, "dvh")
+            updCommandUsuarioPatente.Parameters.Add("@usuario_id", SqlDbType.Int, 4, "usuario_id")
+            updCommandUsuarioPatente.Parameters.Add("@patente_id", SqlDbType.VarChar, 30, "patente_id")
+            updCommandUsuarioPatente.Parameters.Add("@negado", SqlDbType.VarChar, 10, "negado")
+            updateCommandsPorTabla.Add("usuario_patente", updCommandUsuarioPatente)
+            'tabla bitacora
+            Dim updCommandBitacora = New SqlCommand("update bitacora set dvh = @dvh WHERE id = @id and usuario_id = @usuario_id and fecha = @fecha and descripcion = @descripcion and nivel_criticidad = @nivel_criticidad", conexion)
+            updCommandBitacora.Parameters.Add("@dvh", SqlDbType.BigInt, 8, "dvh")
+            updCommandBitacora.Parameters.Add("@id", SqlDbType.Int, 4, "id")
+            updCommandBitacora.Parameters.Add("@usuario_id", SqlDbType.Int, 4, "usuario_id")
+            updCommandBitacora.Parameters.Add("@fecha", SqlDbType.DateTime, 8, "fecha")
+            updCommandBitacora.Parameters.Add("@descripcion", SqlDbType.VarChar, 120, "descripcion")
+            updCommandBitacora.Parameters.Add("@nivel_criticidad", SqlDbType.VarChar, 10, "nivel_criticidad")
+            updateCommandsPorTabla.Add("bitacora", updCommandBitacora)
+            'tabla insumo
+            Dim updCommandInsumo = New SqlCommand("update insumo set dvh = @dvh WHERE nombre = @nombre and precio_unidad = @precio_unidad and stock = @stock", conexion)
+            updCommandInsumo.Parameters.Add("@dvh", SqlDbType.BigInt, 8, "dvh")
+            updCommandInsumo.Parameters.Add("@nombre", SqlDbType.VarChar, 160, "nombre")
+            updCommandInsumo.Parameters.Add("@precio_unidad", SqlDbType.VarChar, 40, "precio_unidad")
+            updCommandInsumo.Parameters.Add("@stock", SqlDbType.VarChar, 40, "stock")
+            updateCommandsPorTabla.Add("insumo", updCommandInsumo)
+            'tabla combo
+            Dim updCommandCombo = New SqlCommand("update combo set dvh = @dvh WHERE nombre = @nombre and precio = @precio", conexion)
+            updCommandCombo.Parameters.Add("@dvh", SqlDbType.BigInt, 8, "dvh")
+            updCommandCombo.Parameters.Add("@nombre", SqlDbType.VarChar, 400, "nombre")
+            updCommandCombo.Parameters.Add("@precio", SqlDbType.VarChar, 40, "precio")
+            updateCommandsPorTabla.Add("combo", updCommandCombo)
 
         Catch exception As Exception
         End Try
@@ -130,6 +130,22 @@ Public Class BaseDeDatos
                 desconectarBD(conexion)
             End Try
             Return scalarResult
+        End SyncLock
+    End Function
+
+    Friend Shared Function actualizarDataSetBulk(consulta As String, tabla As String, dataBulk As DataSet) As Boolean
+        SyncLock objectS
+            Try
+                Dim adapter As New SqlClient.SqlDataAdapter(consulta, conexion)
+                adapter.UpdateCommand = updateCommandsPorTabla.Item(tabla)
+                adapter.Update(dataBulk)
+                dataBulk.AcceptChanges()
+                Return True
+            Catch ex As Exception
+                Return Nothing
+            Finally
+                desconectarBD(conexion)
+            End Try
         End SyncLock
     End Function
 

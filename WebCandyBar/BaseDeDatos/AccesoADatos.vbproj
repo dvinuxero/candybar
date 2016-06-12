@@ -64,6 +64,8 @@
   <ItemGroup>
     <Compile Include="BaseDeDatos.vb" />
     <Compile Include="BitacoraDAO.vb" />
+    <Compile Include="CombosDAO.vb" />
+    <Compile Include="InsumoDAO.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -79,7 +81,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="PedidoDAO.vb" />
     <Compile Include="PermisoDAO.vb" />
+    <Compile Include="SeguridadDAO.vb" />
     <Compile Include="UsuarioDAO.vb" />
   </ItemGroup>
   <ItemGroup>

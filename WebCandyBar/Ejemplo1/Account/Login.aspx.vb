@@ -18,9 +18,10 @@
             Dim password As String = Request.Form("password")
 
             Try
-                NegocioYSeguridad.UsuarioBO.getInstance().loguearUsuario(nickname, password)
+                Dim usuarioLogueado As EntidadesDTO.UsuarioDTO = NegocioYSeguridad.UsuarioBO.getInstance().loguearUsuario(nickname, password)
+                Session.Add("user", usuarioLogueado)
 
-                Server.Transfer("Combos.aspx")
+                Server.Transfer("/Default.aspx")
 
             Catch ex As Exceptions.CandyException
                 Session.Add("error", ex.Message)

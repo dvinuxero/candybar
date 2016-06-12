@@ -28,19 +28,50 @@
         </Scripts>
     </asp:ScriptManager>--%>
     <header>
-        Logo Candy
-        <a id="A1" runat="server" href="~/">Inicio</a>
-        <a id="loginLink" runat="server" href="~/Account/Login.aspx">Entrar</a>
-        <a id="A2" runat="server" href="~/About.aspx">Acerca de...</a>
-        <a id="A3" runat="server" href="~/Contact.aspx">Contacto</a>
+        <%
+            Dim usuarioLogueado As EntidadesDTO.UsuarioDTO = Session.Item("user")
+            If (usuarioLogueado Isnot Nothing) Then
+                Dim id As Integer = usuarioLogueado.id
+                If (NegocioYSeguridad.PermisoBO.getInstance().usuarioTienePermisoParaAccion(id, "P001_PEDIDOS_ALL")) Then
+                    Response.Write("<a href='/Account/Pedidos.aspx'>Pedidos</a> | ")
+                End If
+                If (NegocioYSeguridad.PermisoBO.getInstance().usuarioTienePermisoParaAccion(id, "P002_COMBOS_ALL")) Then
+                    Response.Write("<a href='/Account/Combos.aspx'>Combos</a> | ")
+                End If
+                If (NegocioYSeguridad.PermisoBO.getInstance().usuarioTienePermisoParaAccion(id, "P003_INSUMOS_ALL")) Then
+                    Response.Write("<a href='/Account/Insumos.aspx'>Insumos</a> | ")
+                End If
+                If (NegocioYSeguridad.PermisoBO.getInstance().usuarioTienePermisoParaAccion(id, "P004_USUARIOS_ALL")) Then
+                    Response.Write("<a href='/Account/Usuarios.aspx'>Usuarios</a> | ")
+                End If
+                If (NegocioYSeguridad.PermisoBO.getInstance().usuarioTienePermisoParaAccion(id, "P005_FAMILIAS_ALL")) Then
+                    Response.Write("<a href='/Account/Familias.aspx'>Familias</a> | ")
+                End If
+                If (NegocioYSeguridad.PermisoBO.getInstance().usuarioTienePermisoParaAccion(id, "P006_BACKUP_ALL")) Then
+                    Response.Write("<a href='/Account/Backup.aspx'>Backup</a> | ")
+                End If
+                If (NegocioYSeguridad.PermisoBO.getInstance().usuarioTienePermisoParaAccion(id, "P007_RESTAURAR_ALL")) Then
+                    Response.Write("<a href='/Account/Restaurar.aspx'>Restaurar</a> | ")
+                End If
+                If (NegocioYSeguridad.PermisoBO.getInstance().usuarioTienePermisoParaAccion(id, "P008_CONTRASENIAS_ALL")) Then
+                    Response.Write("<a href='/Account/Constrasenias.aspx'>Constraseñas</a> | ")
+                End If
+            End If
+            
+            Response.Write("<a href='/Default.aspx'>Inicio</a> | ")
+            
+            If (usuarioLogueado IsNot Nothing) Then
+                Response.Write("<a href='/Account/Login.aspx?action=exit'>Salir</a>")
+            Else
+                Response.Write("<a href='/Account/Login.aspx'>Entrar</a>")
+            End If
+            
+        %>
     </header>
     <div id="body">
         <section class="content-wrapper main-content clear-fix">
             <asp:ContentPlaceHolder runat="server" ID="MainContent" />
         </section>
     </div>
-    <footer>
-        <%: DateTime.Now.Year %>
-    </footer>
 </body>
 </html>

@@ -56,7 +56,8 @@ Namespace My
         
         <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("xxx")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=VILLANUSTRE\SQLEXPRESS;Initial Catalog=candybar;Integrated Security=T"& _ 
+            "rue;")>  _
         Public ReadOnly Property StringDeConexion() As String
             Get
                 Return CType(Me("StringDeConexion"),String)

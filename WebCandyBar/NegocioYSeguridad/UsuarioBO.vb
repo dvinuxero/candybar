@@ -3,6 +3,8 @@
 Public Class UsuarioBO
 
     Private Shared _instance As UsuarioBO
+    'cache de usuarios registrados consultados en la base al iniciar el modulo de usuarios
+    Private Shared usuariosRegistrados As Dictionary(Of String, EntidadesDTO.UsuarioDTO)
     Public Shared USUARIO_ID_NUEVO As Integer = 0
     Private Shared CARACTERES_VALIDOS As String = "abcdefghijklmnñopqrstuvwxyz0123456789_-"
 
@@ -14,6 +16,35 @@ Public Class UsuarioBO
             _instance = New UsuarioBO()
         End If
         Return _instance
+    End Function
+
+    'obtiene el dto del usuario del cache segun el id especificado
+    Public Function obtenerUsuarioPorId(usuarioId As Integer) As EntidadesDTO.UsuarioDTO
+        Try
+            Return obtenerUsuarios().Item(CStr(usuarioId))
+        Catch exception As KeyNotFoundException
+            Return Nothing
+        End Try
+    End Function
+
+    'obtiene los usuarios registrados
+    'si el cache no existe los busca en la base de datos, sino devuelve el mapa precargado
+    Public Function obtenerUsuarios() As Dictionary(Of String, EntidadesDTO.UsuarioDTO)
+        Return obtenerUsuarios(False)
+    End Function
+
+    Private Function obtenerUsuarios(forzar As Boolean) As Dictionary(Of String, EntidadesDTO.UsuarioDTO)
+        If (usuariosRegistrados Is Nothing Or forzar) Then
+            usuariosRegistrados = AccesoADatos.UsuarioDAO.getInstance().obtenerUsuarios()
+            For Each usuario In usuariosRegistrados
+                usuario.Value.nombre = SeguridadBO.getInstance().desencriptar(usuario.Value.nombre)
+            Next
+        End If
+        Return usuariosRegistrados
+    End Function
+
+    Public Function obtenerUsuarioIdLogueado() As Integer
+        Return 1
     End Function
 
     'metodo para agregar usuarios nuevos
@@ -124,7 +155,7 @@ Public Class UsuarioBO
 
     'Metodo especializado en realizar el logueo y chequeos importantes antes de iniciar la entrada al sistema
     'cambio un poco la logica respecto al analisis
-    Public Sub loguearUsuario(nickname As String, password As String)
+    Public Function loguearUsuario(nickname As String, password As String) As EntidadesDTO.UsuarioDTO
         Try
             Dim passwordEncriptada As String = SeguridadBO.getInstance().encriptar(password, False)
 
@@ -146,6 +177,8 @@ Public Class UsuarioBO
                 End If
             End If
 
+            PermisoBO.getInstance().iniciarPermisos(usuarioLogueado.id)
+
             If (usuarioLogueado.intentosIncorrectos = 3 And "NO".Equals(usuarioLogueado.baja) And Not esUsuarioAdministrador(usuarioLogueado.id)) Then
                 'marcar evento en bitacora se bloquea usuario
                 BitacoraBO.getInstance().guardarEvento(usuarioLogueado.id, BitacoraBO.TipoCriticidad.ALTA, "Usuario bloqueado")
@@ -162,6 +195,8 @@ Public Class UsuarioBO
             End If
 
             BitacoraBO.getInstance().guardarEvento(usuarioLogueado.id, BitacoraBO.TipoCriticidad.BAJA, "Usuario logueado")
+
+            Return usuarioLogueado
         Catch ex As Exception
             If (TypeOf (ex) Is Exceptions.CandyException) Then
                 Throw ex
@@ -169,6 +204,6 @@ Public Class UsuarioBO
                 Throw New Exceptions.CandyException("Error inesperado, vuelva a intentar")
             End If
         End Try
-    End Sub
+    End Function
 
 End Class

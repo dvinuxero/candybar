@@ -63,6 +63,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BitacoraBO.vb" />
+    <Compile Include="ComboBO.vb" />
+    <Compile Include="InsumoBO.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -78,6 +80,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="PedidoBO.vb" />
     <Compile Include="PermisoBO.vb" />
     <Compile Include="SeguridadBO.vb" />
     <Compile Include="UsuarioBO.vb" />
