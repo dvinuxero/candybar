@@ -153,6 +153,8 @@
     <Content Include="Account\Familias.aspx" />
     <Content Include="Account\Insumos.aspx" />
     <Content Include="Account\Login.aspx" />
+    <Content Include="Account\Logs.aspx" />
+    <Content Include="Account\Patentes.aspx" />
     <Content Include="Account\Pedidos.aspx" />
     <Content Include="Account\Restaurar.aspx" />
     <Content Include="Account\Usuarios.aspx" />
@@ -294,6 +296,20 @@
     </Compile>
     <Compile Include="Account\Insumos.aspx.vb">
       <DependentUpon>Insumos.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Account\Logs.aspx.designer.vb">
+      <DependentUpon>Logs.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\Logs.aspx.vb">
+      <DependentUpon>Logs.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
+    <Compile Include="Account\Patentes.aspx.designer.vb">
+      <DependentUpon>Patentes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\Patentes.aspx.vb">
+      <DependentUpon>Patentes.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
     <Compile Include="Account\Pedidos.aspx.designer.vb">

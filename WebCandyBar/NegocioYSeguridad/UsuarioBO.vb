@@ -65,6 +65,9 @@ Public Class UsuarioBO
             '2 insert en la base
             AccesoADatos.UsuarioDAO.getInstance().agregarUsuario(usuarioNuevo)
             usuarioNuevo.nombre = SeguridadBO.getInstance().desencriptar(usuarioNuevo.nombre)
+            '3 actualizo cache
+            usuariosRegistrados.Remove(CStr(usuarioNuevo.id))
+            usuariosRegistrados.Add(CStr(usuarioNuevo.id), usuarioNuevo)
             '6 se guarda la password en un directorio simulado
             SeguridadBO.getInstance().informarPasswordAlUsuario(usuarioNuevo.id, contraseniaSinEncriptar)
             BitacoraBO.getInstance().guardarEvento(usuarioNuevo.id, BitacoraBO.TipoCriticidad.MEDIA, "Usuario nuevo id " & usuarioNuevo.id)
@@ -77,6 +80,145 @@ Public Class UsuarioBO
                 Return False
             End If
         End Try
+    End Function
+
+    'modificar un usuario ya existente en la base de datos
+    Public Function modificarUsuario(usuarioDTO As EntidadesDTO.UsuarioDTO) As Boolean
+        Try
+            'If (Not PermisoBO.getInstance().usuarioTienePermisoParaAccion(usuarioLogueado.id, "P28_USUARIOS_MODIFICAR")) Then
+            '    Throw New Exceptions.CandyException("Usuario no tiene permiso para modificar usuarios", True)
+            'End If
+            '1 validar
+            validarParaAgregar(usuarioDTO, False)
+            usuarioDTO.nombre = SeguridadBO.getInstance().encriptar(usuarioDTO.nombre, True)
+            '2 ejecutar update
+            AccesoADatos.UsuarioDAO.getInstance().modificarUsuario(usuarioDTO)
+            usuarioDTO.nombre = SeguridadBO.getInstance().desencriptar(usuarioDTO.nombre)
+            '3 actualiza la cache, ya que el id del usuario no cambia es facil
+            Dim usuarioSinModificaciones As EntidadesDTO.UsuarioDTO = obtenerUsuarioPorId(usuarioDTO.id)
+            usuarioSinModificaciones.nickname = usuarioDTO.nickname
+            usuarioSinModificaciones.nombre = usuarioDTO.nombre
+            usuarioSinModificaciones.apellido = usuarioDTO.apellido
+            usuarioSinModificaciones.lang = usuarioDTO.lang
+            '4 actualizamos las familias del usuario
+            'Dim familiasDelUsuario As List(Of String) = PermisoBO.getInstance().obtenerFamiliasPorUsuario(usuarioDTO.id)
+            'PermisoBO.getInstance().asociarFamiliasAlUsuario(usuarioDTO.id, familiasDelUsuario)
+            '5 actualizamos las patentes del usuario
+            'Dim patentesDelUsuario As List(Of String) = PermisoBO.getInstance().obtenerPatentesPorUsuario(usuarioDTO.id)
+            'PermisoBO.getInstance().asociarPatentesAlUsuario(usuarioDTO.id, patentesDelUsuario)
+            BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.MEDIA, "Usuario modificado id " & usuarioDTO.id)
+            Return True
+        Catch exception As Exceptions.CandyException
+            'se informa un error si es necesario
+            If (exception.informarEstado) Then
+                Throw exception
+            Else
+                Return False
+            End If
+        End Try
+    End Function
+
+    'eliminar el usuario especificado
+    Public Function eliminarUsuario(usuarioDTO As EntidadesDTO.UsuarioDTO) As Boolean
+        Try
+            If (esUsuarioAdministrador(usuarioDTO.id)) Then
+                Return False
+            End If
+            If (Not PermisoBO.getInstance().usuarioTienePermisoParaAccion(obtenerUsuarioIdLogueado(), "P29_USUARIOS_BAJA")) Then
+                Throw New Exceptions.CandyException("Usuario no tiene permiso para eliminar usuarios", True)
+            End If
+            If (usuarioDTO.id = UsuarioBO.getInstance().obtenerUsuarioIdLogueado()) Then
+                Throw New Exceptions.CandyException("No se puede eliminar el usuario con el que esta logueado al sistema", True)
+            End If
+            '1 eliminar usuario ya se valido previamente q no sea user admin y q tenga permisos
+            AccesoADatos.UsuarioDAO.getInstance().eliminarUsuario(usuarioDTO)
+            '2 se actualiza la cache
+            usuariosRegistrados.Remove(CStr(usuarioDTO.id))
+            '3 se eliminan las asociaciones de familia del usuario
+            PermisoBO.getInstance().eliminarFamiliasDelUsuario(usuarioDTO.id)
+            '3 se eliminan las asociaciones de patentes del usuario
+            PermisoBO.getInstance().eliminarPatentesDelUsuario(usuarioDTO.id)
+            BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.ALTA, "Usuario eliminado id " & usuarioDTO.id)
+            Return True
+        Catch exception As Exceptions.CandyException
+            'se informa un error si es necesario
+            If (exception.informarEstado) Then
+                Throw exception
+            Else
+                Return False
+            End If
+        End Try
+    End Function
+
+    'Public Function cambiarContrasenia(contraseniaNueva As String, contraseniaNuevaConfirmada As String) As Boolean
+    '    Dim contraseniaSinEncriptar As String = contraseniaNueva
+    '    If (contraseniaNueva.Equals(contraseniaNuevaConfirmada)) Then
+    '        If (contraseniaNueva.Length <= 20) Then
+    '            contraseniaNueva = SeguridadBO.getInstance().encriptar(contraseniaNueva, False)
+    '            Dim ejecutado As Boolean = AccesoADatos.UsuarioDAO.getInstance().cambiarContrasenia(obtenerUsuarioIdLogueado(), contraseniaNueva)
+    '            If (Not ejecutado) Then
+    '                BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.MEDIA, "Error de validacion al cambiar contrasena")
+    '                Throw New Exceptions.CandyException("Error al modificar la contraseña, vuelva a intentarlo")
+    '            Else
+    '                usuarioLogueado.password = contraseniaNueva
+    '                obtenerUsuarios().Item(CStr(obtenerUsuarioIdLogueado())).password = contraseniaNueva
+    '                SeguridadBO.getInstance().informarPasswordAlUsuario(obtenerUsuarioIdLogueado(), contraseniaSinEncriptar)
+    '                BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.MEDIA, "Contrasena cambiada para el usuario " & usuarioLogueado.id)
+    '                Return ejecutado
+    '            End If
+    '        Else
+    '            BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.MEDIA, "Error de validacion al cambiar contrasena")
+    '            Throw New Exceptions.CandyException("El maximo de caracteres de la contraseña es 20")
+    '        End If
+    '    Else
+    '        BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.MEDIA, "Error de validacion al cambiar contrasena")
+    '        Throw New Exceptions.CandyException("No coinciden las contraseñas por favor reintentar")
+    '    End If
+    'End Function
+
+    'nuevo metodo en el analisis
+    Public Function reestablecerContraseña(usuarioId As Integer)
+        Dim contraseniaSinEncriptar As String = SeguridadBO.getInstance().autogenerarContrasenia()
+        Dim contraseniaNueva As String = SeguridadBO.getInstance().encriptar(contraseniaSinEncriptar, False)
+        Dim ejecutado As Boolean = AccesoADatos.UsuarioDAO.getInstance().cambiarContrasenia(usuarioId, contraseniaNueva)
+        If (Not ejecutado) Then
+            BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.MEDIA, "Error de validacion al reestablecer contrasena")
+            Throw New Exceptions.CandyException("Error al reestablecer la contraseña, vuelva a intentarlo", True)
+        Else
+            obtenerUsuarios().Item(CStr(usuarioId)).password = contraseniaNueva
+            SeguridadBO.getInstance().informarPasswordAlUsuario(usuarioId, contraseniaSinEncriptar)
+            BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.MEDIA, "Contrasena reestablecida para el usuario " & usuarioId)
+            Return ejecutado
+        End If
+    End Function
+
+    'metodo se agrega al analisis
+    Public Function desbloquearUsuario(usuarioId As Integer) As Boolean
+        If (Not NegocioYSeguridad.PermisoBO.getInstance().usuarioTienePermisoParaAccion(obtenerUsuarioIdLogueado(), "P08_USUARIOS_DESBLOQUEAR")) Then
+            Throw New Exceptions.CandyException("Usuario no tiene permisos para desbloquear/bloquear")
+        End If
+        Dim ejecutado As Boolean = AccesoADatos.UsuarioDAO.getInstance().desbloquearUsuario(usuarioId)
+        If (ejecutado) Then
+            usuariosRegistrados.Item(CStr(usuarioId)).baja = "NO"
+            BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.ALTA, "Usuario " & usuarioId & " desbloqueado")
+        End If
+        Return ejecutado
+    End Function
+
+    'metodo se agrega al analisis
+    Public Function bloquearUsuario(usuarioId As Integer) As Boolean
+        If (Not NegocioYSeguridad.PermisoBO.getInstance().usuarioTienePermisoParaAccion(obtenerUsuarioIdLogueado(), "P08_USUARIOS_DESBLOQUEAR")) Then
+            Throw New Exceptions.CandyException("Usuario no tiene permisos para desbloquear/bloquear")
+        End If
+        If (esUsuarioAdministrador(usuarioId)) Then
+            Throw New Exceptions.CandyException("No se puede bloquear un usuario administrador")
+        End If
+        Dim ejecutado As Boolean = AccesoADatos.UsuarioDAO.getInstance().bloquearUsuario(usuarioId)
+        If (ejecutado) Then
+            usuariosRegistrados.Item(CStr(usuarioId)).baja = "SI"
+            BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.ALTA, "Usuario " & usuarioId & " bloqueado")
+        End If
+        Return ejecutado
     End Function
 
     'metodo cambia de firma le pasamos el usuarioDTO y la respuesta es un throw exception para poder tener un mensaje

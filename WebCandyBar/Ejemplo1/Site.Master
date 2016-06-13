@@ -47,6 +47,9 @@
                 If (NegocioYSeguridad.PermisoBO.getInstance().usuarioTienePermisoParaAccion(id, "P005_FAMILIAS_ALL")) Then
                     Response.Write("<a href='/Account/Familias.aspx'>Familias</a> | ")
                 End If
+                If (NegocioYSeguridad.PermisoBO.getInstance().usuarioTienePermisoParaAccion(id, "P009_PATENTES_ALL")) Then
+                    Response.Write("<a href='/Account/Patentes.aspx'>Patentes</a> | ")
+                End If
                 If (NegocioYSeguridad.PermisoBO.getInstance().usuarioTienePermisoParaAccion(id, "P006_BACKUP_ALL")) Then
                     Response.Write("<a href='/Account/Backup.aspx'>Backup</a> | ")
                 End If
@@ -55,6 +58,9 @@
                 End If
                 If (NegocioYSeguridad.PermisoBO.getInstance().usuarioTienePermisoParaAccion(id, "P008_CONTRASENIAS_ALL")) Then
                     Response.Write("<a href='/Account/Constrasenias.aspx'>Constraseñas</a> | ")
+                End If
+                If (NegocioYSeguridad.PermisoBO.getInstance().usuarioTienePermisoParaAccion(id, "P010_LOGS_ALL")) Then
+                    Response.Write("<a href='/Account/Logs.aspx'>Logs</a> | ")
                 End If
             End If
             

@@ -11,5 +11,5 @@ Option Strict On
 Option Explicit On
 
 
-Partial Public Class Usuarios
+Partial Public Class Patentes
 End Class

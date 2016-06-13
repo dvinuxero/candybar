@@ -1,43 +1,44 @@
-﻿<%@ Page Title="Entrar a Candy Bar" Language="VB" MasterPageFile="~/Site.Master" AutoEventWireup="false" CodeBehind="Pedidos.aspx.vb" Inherits="WebCandyBar.Pedidos" %>
+﻿<%@ Page Title="Administracion de pedidos" Language="VB" MasterPageFile="~/Site.Master" AutoEventWireup="false" CodeBehind="Pedidos.aspx.vb" Inherits="WebCandyBar.Pedidos" %>
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
-    <a href="Pedidos.aspx?action=post">Nuevo</a>
-    <%
-        If (("post".Equals(Request.Form("action")) Or "put".Equals(Request.Form("action"))) Or ("post".Equals(Request.QueryString("action")) Or "put".Equals(Request.QueryString("action")))) Then
-            If ("GET".Equals(Request.HttpMethod)) Then
-                Dim pedido As New EntidadesDTO.PedidoDTO()
-                If ("put".Equals(Request.QueryString("action"))) Then
-                    Dim id As Integer = Integer.Parse(Request.QueryString("id"))
-                    pedido = NegocioYSeguridad.PedidoBO.getInstance().obtenerPedidoPorId(id)
-                End If
-    %>
+<%
+If (("post".Equals(Request.Form("action")) Or "put".Equals(Request.Form("action"))) Or ("post".Equals(Request.QueryString("action")) Or "put".Equals(Request.QueryString("action")))) Then
+    If ("GET".Equals(Request.HttpMethod)) Then
+            Dim pedido As New EntidadesDTO.PedidoDTO()
+            If ("put".Equals(Request.QueryString("action"))) Then
+                Dim id As Integer = Integer.Parse(Request.QueryString("id"))
+                pedido = NegocioYSeguridad.PedidoBO.getInstance().obtenerPedidoPorId(id)
+            End If
+%>
                 <form action="Pedidos.aspx" method="post">
-                    <input type="hidden" name="action" value='<%= IIf(pedido IsNot Nothing, "put", "post") %>' />
-                    <%
-                        If (pedido IsNot Nothing and pedido.id <> 0) Then
-                            Response.Write("<input type='hidden' name='id' value='" + pedido.id.ToString() + "' />")
+                    <input type="hidden" name="action" value='<%= IIf("put".Equals(Request.Form("action")) Or "put".Equals(Request.QueryString("action")), "put", "post")%>' />
+<%
+                        If (pedido IsNot Nothing) Then
+                            If (pedido.id <> 0) Then
+                                Response.Write("<input type='hidden' name='id' value='" + pedido.id.ToString() + "' />")
+                            End If
                         End If
-                    %>
+%>
                     <table>
-                        <tr><td>Agasajado:</td><td><input type="text" name="agasajado" value='<%= IIf(pedido IsNot Nothing and pedido.agasajado isnot Nothing, pedido.agasajado, "")%>' /></td>
-                        <tr><td>Combo</td><td>
-                        <%
+                        <tr><td>Agasajado:</td><td><input type="text" name="agasajado" value='<%= IIf(pedido IsNot Nothing, pedido.agasajado, "")%>' /></td>
+                        <tr><td>Combo:</td><td>
+<%
                             Dim combos = NegocioYSeguridad.ComboBO.getInstance().obtenerCombos()
                             Response.Write("<select name='comboId'>")
                             For Each combo As EntidadesDTO.ComboDTO In combos.Values
                                 Response.Write("<option value='" + combo.id.ToString() + "'>" + combo.nombre + "</option>")
                             Next
                             Response.Write("</select>")
-                        %>
+%>
                         </td></tr>
-                        <tr><td>Fecha de Inicio:</td><td><input type="date" name="fechaInicio" value='<%= IIf(pedido IsNot Nothing and pedido.fechaInicio isnot Nothing, pedido.fechaInicio, "")%>'></td></tr>
-                        <tr><td>Fecha de Entrega:</td><td><input type="date" name="fechaEntrega" value='<%= IIf(pedido IsNot Nothing And pedido.fechaEntrega IsNot Nothing, pedido.fechaEntrega, "")%>'></td></tr>
-                        <tr><td>Comentario:</td><td><textarea name="comentario" rows="5"><%= IIf(pedido.comentario IsNot Nothing, pedido.comentario, "")%></textarea></td></tr>
-                        <tr><td><input type="submit" name="guardarPedido" value="Guardar" /></td></tr>
+                        <tr><td>Fecha de Inicio:</td><td><input type="date" name="fechaInicio" value='<%= IIf(pedido IsNot Nothing, pedido.fechaInicio, "")%>'></td></tr>
+                        <tr><td>Fecha de Entrega:</td><td><input type="date" name="fechaEntrega" value='<%= IIf(pedido IsNot Nothing, pedido.fechaEntrega, "")%>'></td></tr>
+                        <tr><td>Comentario:</td><td><textarea name="comentario" rows="5"><%= IIf(pedido IsNot Nothing, pedido.comentario, "")%></textarea></td></tr>
+                        <tr><td><input type="submit" name="guardarPedido" value="Guardar" /> <a href='/Account/Pedidos.aspx'>Volver</a></td></tr>
                     </table>
                 </form>
-    <%
-            Else
+<%
+        Else
                 Dim pedido As New EntidadesDTO.PedidoDTO()
                 
                 pedido.agasajado = Request.Form("agasajado")
@@ -54,15 +55,15 @@
         End If
                 Response.Write("Exito! <a href='/Account/Pedidos.aspx'>Volver</a>")
             End If
-        ElseIf ("delete".Equals(Request.QueryString("action"))) Then
+ElseIf ("delete".Equals(Request.QueryString("action"))) Then
             Dim id As Integer = Integer.Parse(Request.QueryString("id"))
             NegocioYSeguridad.PedidoBO.getInstance().cancelarPedido(id)
             Response.Write("Exito! <a href='/Account/Pedidos.aspx'>Volver</a>")
-        ElseIf ("details".Equals(Request.QueryString("action"))) Then
-        Else
+ElseIf ("details".Equals(Request.QueryString("action"))) Then
+Else
             Dim pedidos As Dictionary(Of String, EntidadesDTO.PedidoDTO) = NegocioYSeguridad.PedidoBO.getInstance().obtenerPedidos()
             Response.Write("<table>")
-            Response.Write("<tr><td><b>ID</b></td><td><b>AGASAJADO</b></td><td><b>ESTADO</b></td><td><b>ACCIONES</b></td></tr>")
+            Response.Write("<tr><td><b>ID</b></td><td><b>AGASAJADO</b></td><td><b>ESTADO</b></td><td><b>ACCIONES(<a href='Pedidos.aspx?action=post'>Nuevo</a>)</b></td></tr>")
             For Each pedido As EntidadesDTO.PedidoDTO In pedidos.Values
                 Response.Write("<tr>")
                 Response.Write("<td>" + pedido.id.ToString() + "</td>")
@@ -73,5 +74,5 @@
             Next
             Response.Write("</table>")
         End If
-    %>
+%>
 </asp:Content>

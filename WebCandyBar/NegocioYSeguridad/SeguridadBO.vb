@@ -229,13 +229,13 @@ Public Class SeguridadBO
     'se considera q ya ha sido cambiada la password
     'se envia de manera simulada un mail al usuario, entonces queda guardado en un txt dentro de una carpeta
     Friend Function informarPasswordAlUsuario(usuarioId As Integer, contraseniaNueva As String) As Boolean
-        Dim directorio As String = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
-        Dim nickname As String = UsuarioBO.getInstance().obtenerUsuarioPorId(usuarioId).nickname
+        'Dim directorio As String = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+        'Dim nickname As String = UsuarioBO.getInstance().obtenerUsuarioPorId(usuarioId).nickname
 
-        Dim writer As New System.IO.StreamWriter(directorio + "/password_" & nickname.ToLower() & ".txt", False)
-        writer.WriteLine(nickname & " te enviamos la nueva contraseña: " & contraseniaNueva)
-        writer.Close()
-        BitacoraBO.getInstance().guardarEvento(usuarioId, BitacoraBO.TipoCriticidad.MEDIA, "Cambio de contraseña")
+        'Dim writer As New System.IO.StreamWriter(directorio + "/password_" & nickname.ToLower() & ".txt", False)
+        'writer.WriteLine(nickname & " te enviamos la nueva contraseña: " & contraseniaNueva)
+        'writer.Close()
+        'BitacoraBO.getInstance().guardarEvento(usuarioId, BitacoraBO.TipoCriticidad.MEDIA, "Cambio de contraseña")
         Return True
     End Function
 
