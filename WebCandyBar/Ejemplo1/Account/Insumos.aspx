@@ -12,13 +12,16 @@
                 Response.Write("<input type='hidden' name='action' value='combo'>")
                 Response.Write("<input type='hidden' name='id' value='" + comboId.ToString() + "'>")
                 Response.Write("<table>")
-                Response.Write("<tr><td><b>ASIGNAR</b></td><td><b>NOMBRE</b></td><td><b>TIPO</b></td><td><b>PRECIO POR UNIDAD</b></td><td><b>STOCK</b></td></tr>")
+                Response.Write("<tr><td><b>ASIGNAR</b></td><td><b>NOMBRE</b></td><td><b>TIPO</b></td><td><b>PRECIO POR UNIDAD</b></td><td><b>STOCK DEL COMBO</b></td></tr>")
                 For Each insumo As EntidadesDTO.InsumoDTO In insumos.Values
                     Dim checkedAsignado As String = ""
+                    Dim stockDelCombo As String = "0"
                     If (insumosDelCombo(0).Contains(insumo.id)) Then
                         checkedAsignado = "checked"
+                        stockDelCombo = insumosDelCombo(1)(insumosDelCombo(0).IndexOf(insumo.id)).ToString()
                     Else
                         checkedAsignado = ""
+                        stockDelCombo = "0"
                     End If
                 
                     Response.Write("<tr>")
@@ -26,7 +29,7 @@
                     Response.Write("<td>" + insumo.nombre + "</td>")
                     Response.Write("<td>" + insumo.tipo + "</td>")
                     Response.Write("<td>" + insumo.precioUnidad + "</td>")
-                    Response.Write("<td>" + insumo.stock + "</td>")
+                    Response.Write("<td><input type='text' name='stock_" + insumo.id.ToString() + "' value='" + stockDelCombo + "' /></td>")
                     Response.Write("</tr>")
                 Next
                 Response.Write("<tr><td><input type='submit' name='guardarInsumosDelCombo' value='Guardar' /> <a href='/Account/Combos.aspx'>Volver</a></td></tr>")
@@ -46,19 +49,23 @@
                         For Each insumoAsignado As String In insumosAsignadosAlCombo.Split(",")
                             Dim insumo As EntidadesDTO.InsumoDTO = NegocioYSeguridad.InsumoBO.getInstance().obtenerInsumoPorId(insumoAsignado)
                             insumosAsignados(0).Add(insumo.id.ToString())
-                            insumosAsignados(1).Add(insumo.stock)
+                            insumosAsignados(1).Add(Request.Form("stock_" + insumo.id.ToString()))
                         Next
                     Else
                         Dim insumo As EntidadesDTO.InsumoDTO = NegocioYSeguridad.InsumoBO.getInstance().obtenerInsumoPorId(insumosAsignadosAlCombo)
                         insumosAsignados(0).Add(insumo.id.ToString())
-                        insumosAsignados(1).Add(insumo.stock)
+                        insumosAsignados(1).Add(Request.Form("stock_" + insumo.id.ToString()))
                     End If
                 End If
             
                 combo.insumos = insumosAsignados
-            
-                NegocioYSeguridad.ComboBO.getInstance().actualizarCombo(combo)
-                Response.Write("Exito! <a href='/Account/Combos.aspx'>Volver</a>")
+                
+                Try
+                    NegocioYSeguridad.ComboBO.getInstance().actualizarCombo(combo)
+                    Response.Write("Exito! <a href='/Account/Combos.aspx'>Volver</a>")
+                Catch ex As Exceptions.CandyException
+                    Response.Write("Error! " + ex.Message + " <a href='/Account/Combos.aspx'>Volver</a>")
+                End Try
             End If
         ElseIf (("post".Equals(Request.Form("action")) Or "put".Equals(Request.Form("action"))) Or ("post".Equals(Request.QueryString("action")) Or "put".Equals(Request.QueryString("action")))) Then
             If ("GET".Equals(Request.HttpMethod)) Then
@@ -114,33 +121,41 @@
         insumo.precioUnidad = Request.Form("precioUnidad")
         insumo.stock = Request.Form("stock")
                 
-        If (Request.Form("id") IsNot Nothing) Then
-            insumo.id = Integer.Parse(Request.Form("id"))
-            NegocioYSeguridad.InsumoBO.getInstance().actualizarInsumo(insumo)
-        Else
-            NegocioYSeguridad.InsumoBO.getInstance().agregarInsumo(insumo)
-        End If
-        Response.Write("Exito! <a href='/Account/Insumos.aspx'>Volver</a>")
+        Try
+            If (Request.Form("id") IsNot Nothing) Then
+                insumo.id = Integer.Parse(Request.Form("id"))
+                NegocioYSeguridad.InsumoBO.getInstance().actualizarInsumo(insumo)
+            Else
+                NegocioYSeguridad.InsumoBO.getInstance().agregarInsumo(insumo)
+            End If
+            Response.Write("Exito! <a href='/Account/Insumos.aspx'>Volver</a>")
+        Catch ex As Exceptions.CandyException
+            Response.Write("Error! " + ex.Message + " <a href='/Account/Insumos.aspx'>Volver</a>")
+        End Try
     End If
 ElseIf ("delete".Equals(Request.QueryString("action"))) Then
     Dim id As Integer = Integer.Parse(Request.QueryString("id"))
     Dim insumo As EntidadesDTO.InsumoDTO = NegocioYSeguridad.InsumoBO.getInstance().obtenerInsumoPorId(id)
-    NegocioYSeguridad.InsumoBO.getInstance().eliminarInsumo(insumo)
-    Response.Write("Exito! <a href='/Account/Insumos.aspx'>Volver</a>")
+    Try
+        NegocioYSeguridad.InsumoBO.getInstance().eliminarInsumo(insumo)
+        Response.Write("Exito! <a href='/Account/Insumos.aspx'>Volver</a>")
+    Catch ex As Exceptions.CandyException
+        Response.Write("Error! " + ex.Message + " <a href='/Account/Insumos.aspx'>Volver</a>")
+    End Try
 Else
-    Dim insumos As Dictionary(Of String, EntidadesDTO.InsumoDTO) = NegocioYSeguridad.InsumoBO.getInstance().obtenerInsumos()
-    Response.Write("<table>")
-    Response.Write("<tr><td><b>INSUMO</b></td><td><b>TIPO</b></td><td><b>PRECIO UNITARIO</b></td><td><b>DISPONIBLES</b></td><td><b>ACCIONES(<a href='Insumos.aspx?action=post'>Nuevo</a>)</b></td></tr>")
-    For Each insumo As EntidadesDTO.InsumoDTO In insumos.Values
-        Response.Write("<tr>")
-        Response.Write("<td>" + insumo.nombre.ToString() + "</td>")
-        Response.Write("<td>" + insumo.tipo + "</td>")
-        Response.Write("<td>" + insumo.precioUnidad + "</td>")
-        Response.Write("<td>" + insumo.stock + "</td>")
-        Response.Write("<td>" + "<a href='/Account/Insumos.aspx?action=delete&id=" + insumo.id.ToString() + "'>Borrar</a> " + "<a href='/Account/Insumos.aspx?action=put&id=" + insumo.id.ToString() + "'>Modificar</a> " + "</td>")
-        Response.Write("</tr>")
-    Next
-    Response.Write("</table>")
+        Dim insumos As Dictionary(Of String, EntidadesDTO.InsumoDTO) = NegocioYSeguridad.InsumoBO.getInstance().obtenerInsumos()
+        Response.Write("<table>")
+        Response.Write("<tr><td><b>INSUMO</b></td><td><b>TIPO</b></td><td><b>PRECIO UNITARIO</b></td><td><b>DISPONIBLES</b></td><td><b>ACCIONES(<a href='Insumos.aspx?action=post'>Nuevo</a>)</b></td></tr>")
+        For Each insumo As EntidadesDTO.InsumoDTO In insumos.Values
+            Response.Write("<tr>")
+            Response.Write("<td>" + insumo.nombre.ToString() + "</td>")
+            Response.Write("<td>" + insumo.tipo + "</td>")
+            Response.Write("<td>" + insumo.precioUnidad + "</td>")
+            Response.Write("<td>" + insumo.stock + "</td>")
+            Response.Write("<td>" + "<a href='/Account/Insumos.aspx?action=delete&id=" + insumo.id.ToString() + "'>Borrar</a> " + "<a href='/Account/Insumos.aspx?action=put&id=" + insumo.id.ToString() + "'>Modificar</a> " + "</td>")
+            Response.Write("</tr>")
+        Next
+        Response.Write("</table>")
 End If
     %>
 </asp:Content>

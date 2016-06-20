@@ -1,16 +1,12 @@
-﻿<%@ Page Language="vb" AutoEventWireup="false" CodeBehind="Contrasenias.aspx.vb" Inherits="WebCandyBar.Contraseñas" %>
+﻿<%@ Page Title="Administracion de Contrasenias" Language="VB" MasterPageFile="~/Site.Master" AutoEventWireup="false" CodeBehind="Contrasenias.aspx.vb" Inherits="WebCandyBar.Contrasenias" %>
 
-<!DOCTYPE html>
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-    <title></title>
-</head>
-<body>
-    <form id="form1" runat="server">
-    <div>
-    
+<asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
+    <div id="reestPass">
+        Para reestablecer la contraseña debe detallar la consulta via email al administrador de sistema <a href="mailto:deliciasnil@gmail.com">Delicias Nil</a>.<br>
+        <b>Ejemlo:</b><br>
+        <address>
+            Usuario: NICKNAME<br>
+            Mail de contacto: example@gmail.com<br>
+        </address>
     </div>
-    </form>
-</body>
-</html>
+</asp:Content>

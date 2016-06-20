@@ -62,8 +62,12 @@
                     End If
                 End If
             
-                NegocioYSeguridad.PermisoBO.getInstance().asociarPatentesAlUsuario(usuarioId, patentesAsignadas)
-                Response.Write("Exito! <a href='/Account/Usuarios.aspx'>Volver</a>")
+                Try
+                    NegocioYSeguridad.PermisoBO.getInstance().asociarPatentesAlUsuario(usuarioId, patentesAsignadas)
+                    Response.Write("Exito! <a href='/Account/Usuarios.aspx'>Volver</a>")
+                Catch ex As Exceptions.CandyException
+                    Response.Write("Error! " + ex.Message + " <a href='/Account/Usuarios.aspx'>Volver</a>")
+                End Try
             End If
         
         ElseIf ("familia".Equals(Request.QueryString("action")) Or "familia".Equals(Request.Form("action"))) Then
@@ -125,8 +129,12 @@
                     End If
                 End If
             
-                NegocioYSeguridad.PermisoBO.getInstance().asociarPatentesDeLaFamilia(familiaId, patentesAsignadas)
-                Response.Write("Exito! <a href='/Account/Familias.aspx'>Volver</a>")
+                Try
+                    NegocioYSeguridad.PermisoBO.getInstance().asociarPatentesDeLaFamilia(familiaId, patentesAsignadas)
+                    Response.Write("Exito! <a href='/Account/Familias.aspx'>Volver</a>")
+                Catch ex As Exceptions.CandyException
+                    Response.Write("Error! " + ex.Message + " <a href='/Account/Familias.aspx'>Volver</a>")
+                End Try
             End If
         Else
             Dim patentes = NegocioYSeguridad.PermisoBO.getInstance().obtenerPatentes()

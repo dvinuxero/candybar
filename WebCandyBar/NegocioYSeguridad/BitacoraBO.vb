@@ -22,13 +22,32 @@ Public Class BitacoraBO
     End Function
 
     Public Function guardarEvento(usuarioId As Integer, criticidad As TipoCriticidad, descripcion As String) As Boolean
-        'Dim criticidadEncriptada As String = SeguridadBO.getInstance().encriptar(getCriticidad(criticidad), True)
-        'Dim descripcionEncriptada As String = SeguridadBO.getInstance().encriptar(descripcion, True)
-        'Dim ejecutado As Boolean = AccesoADatos.BitacoraDAO.getInstance().guardarEvento(usuarioId, criticidadEncriptada, descripcionEncriptada)
-        'SeguridadBO.getInstance().calcularDVH("bitacora")
-        'SeguridadBO.getInstance().calcularDVV("bitacora")
-        'Return ejecutado
+        Dim criticidadEncriptada As String = SeguridadBO.getInstance().encriptar(getCriticidad(criticidad), True)
+        Dim descripcionEncriptada As String = SeguridadBO.getInstance().encriptar(descripcion, True)
+        Dim ejecutado As Boolean = AccesoADatos.BitacoraDAO.getInstance().guardarEvento(usuarioId, criticidadEncriptada, descripcionEncriptada)
+        SeguridadBO.getInstance().calcularDVH("bitacora")
+        SeguridadBO.getInstance().calcularDVV("bitacora")
+        Return ejecutado
         Return True
+    End Function
+
+    Public Function obtenerLogs(idFrom As Integer, idTo As Integer) As Dictionary(Of String, EntidadesDTO.BitacoraDTO)
+        If ((idTo - idFrom) > 50) Then
+            Throw New Exceptions.CandyException("Error se piden mas de 50 registros al mismo tiempo")
+        End If
+
+        If (idTo < idFrom) Then
+            Throw New Exceptions.CandyException("Error no se establecieron limites correctos")
+        End If
+
+        Dim logs As Dictionary(Of String, EntidadesDTO.BitacoraDTO) = AccesoADatos.BitacoraDAO.getInstance().obtenerLogs(idFrom, idTo)
+
+        For Each log As EntidadesDTO.BitacoraDTO In logs.Values
+            log.descripcion = NegocioYSeguridad.SeguridadBO.getInstance().desencriptar(log.descripcion)
+            log.criticidad = NegocioYSeguridad.SeguridadBO.getInstance().desencriptar(log.criticidad)
+        Next
+
+        Return logs
     End Function
 
     Public Function getCriticidad(criticidad As TipoCriticidad) As String

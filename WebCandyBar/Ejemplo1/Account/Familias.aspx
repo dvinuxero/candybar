@@ -46,8 +46,12 @@
                     End If
                 End If
             
-                NegocioYSeguridad.PermisoBO.getInstance().asociarFamiliasAlUsuario(usuarioId, familiasAsignadas)
-                Response.Write("Exito! <a href='/Account/Usuarios.aspx'>Volver</a>")
+                Try
+                    NegocioYSeguridad.PermisoBO.getInstance().asociarFamiliasAlUsuario(usuarioId, familiasAsignadas)
+                    Response.Write("Exito! <a href='/Account/Usuarios.aspx'>Volver</a>")
+                Catch ex As Exceptions.CandyException
+                    Response.Write("Error! " + ex.Message + " <a href='/Account/Usuarios.aspx'>Volver</a>")
+                End Try
             End If
         
         ElseIf (("post".Equals(Request.Form("action")) Or "put".Equals(Request.Form("action"))) Or ("post".Equals(Request.QueryString("action")) Or "put".Equals(Request.QueryString("action")))) Then
@@ -90,18 +94,26 @@
         Dim familiaId As String = Request.Form("nombre")
         Dim familiaDesc As String = Request.Form("descripcion")
                 
-        If (Request.Form("id") IsNot Nothing) Then
-            Dim id As String = Request.Form("id")
-            NegocioYSeguridad.PermisoBO.getInstance().modificarFamilia(id, familiaId, familiaDesc)
-        Else
-            NegocioYSeguridad.PermisoBO.getInstance().agregarFamilia(familiaId, familiaDesc)
-        End If
-        Response.Write("Exito! <a href='/Account/Familias.aspx'>Volver</a>")
+        Try
+            If (Request.Form("id") IsNot Nothing) Then
+                Dim id As String = Request.Form("id")
+                NegocioYSeguridad.PermisoBO.getInstance().modificarFamilia(id, familiaId, familiaDesc)
+            Else
+                NegocioYSeguridad.PermisoBO.getInstance().agregarFamilia(familiaId, familiaDesc)
+            End If
+            Response.Write("Exito! <a href='/Account/Familias.aspx'>Volver</a>")
+        Catch ex As Exceptions.CandyException
+            Response.Write("Error! " + ex.Message + " <a href='/Account/Familias.aspx'>Volver</a>")
+        End Try
     End If
 ElseIf ("delete".Equals(Request.QueryString("action"))) Then
     Dim id As String = Request.QueryString("id")
-    NegocioYSeguridad.PermisoBO.getInstance().eliminarFamilia(id)
-    Response.Write("Exito! <a href='/Account/Familias.aspx'>Volver</a>")
+    Try
+        NegocioYSeguridad.PermisoBO.getInstance().eliminarFamilia(id)
+        Response.Write("Exito! <a href='/Account/Familias.aspx'>Volver</a>")
+    Catch ex As Exceptions.CandyException
+        Response.Write("Error! " + ex.Message + " <a href='/Account/Familias.aspx'>Volver</a>")
+    End Try
 Else
     Dim familias As Dictionary(Of String, String) = NegocioYSeguridad.PermisoBO.getInstance().obtenerFamilias()
     Response.Write("<table>")

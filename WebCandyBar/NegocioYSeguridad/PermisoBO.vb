@@ -51,6 +51,7 @@ Public Class PermisoBO
         '    Throw New Exceptions.CandyException("Usuario no tiene permiso para asociar familias", True)
         'End If
         Dim ejecutado As Boolean = AccesoADatos.PermisoDAO.getInstance().asociarFamiliasAlUsuario(usuarioId, familias)
+        cachearFamiliasPorUsuario(usuarioId, familias)
         Return ejecutado
     End Function
 
@@ -61,6 +62,7 @@ Public Class PermisoBO
         Dim ejecutado As Boolean = AccesoADatos.PermisoDAO.getInstance().asociarPatentesAlUsuario(usuarioId, patentes)
         SeguridadBO.getInstance().calcularDVH("usuario_patente")
         SeguridadBO.getInstance().calcularDVV("usuario_patente")
+        cachearPatentesPorUsuario(usuarioId, patentes)
         Return ejecutado
     End Function
 
@@ -68,6 +70,7 @@ Public Class PermisoBO
         Dim ejecutado As Boolean = AccesoADatos.PermisoDAO.getInstance().asociarPatentesDeLaFamilia(familiaId, patentes)
         SeguridadBO.getInstance().calcularDVH("familia_patente")
         SeguridadBO.getInstance().calcularDVV("familia_patente")
+        cachearPatentesPorFamilia(familiaId, patentes)
         Return ejecutado
     End Function
 

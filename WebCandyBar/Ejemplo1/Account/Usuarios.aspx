@@ -60,19 +60,27 @@
         usuario.apellido = Request.Form("apellido")
         usuario.lang = Request.Form("lang")
                 
-        If (Request.Form("id") IsNot Nothing) Then
-            usuario.id = Integer.Parse(Request.Form("id"))
-            NegocioYSeguridad.UsuarioBO.getInstance().modificarUsuario(usuario)
-        Else
-            NegocioYSeguridad.UsuarioBO.getInstance().agregarUsuario(usuario)
-        End If
-        Response.Write("Exito! <a href='/Account/Usuarios.aspx'>Volver</a>")
+        Try
+            If (Request.Form("id") IsNot Nothing) Then
+                usuario.id = Integer.Parse(Request.Form("id"))
+                NegocioYSeguridad.UsuarioBO.getInstance().modificarUsuario(usuario)
+            Else
+                NegocioYSeguridad.UsuarioBO.getInstance().agregarUsuario(usuario)
+            End If
+            Response.Write("Exito! <a href='/Account/Usuarios.aspx'>Volver</a>")
+        Catch ex As Exceptions.CandyException
+            Response.Write("Error! " + ex.Message + " <a href='/Account/Usuarios.aspx'>Volver</a>")
+        End Try
     End If
 ElseIf ("delete".Equals(Request.QueryString("action"))) Then
     Dim id As Integer = Integer.Parse(Request.QueryString("id"))
     Dim usuarioABorrar As EntidadesDTO.UsuarioDTO = NegocioYSeguridad.UsuarioBO.getInstance().obtenerUsuarioPorId(id)
-    NegocioYSeguridad.UsuarioBO.getInstance().eliminarUsuario(usuarioABorrar)
-    Response.Write("Exito! <a href='/Account/Usuarios.aspx'>Volver</a>")
+    Try
+        NegocioYSeguridad.UsuarioBO.getInstance().eliminarUsuario(usuarioABorrar)
+        Response.Write("Exito! <a href='/Account/Usuarios.aspx'>Volver</a>")
+    Catch ex As Exceptions.CandyException
+        Response.Write("Error! " + ex.Message + " <a href='/Account/Usuarios.aspx'>Volver</a>")
+    End Try
 Else
     Dim usuarios As Dictionary(Of String, EntidadesDTO.UsuarioDTO) = NegocioYSeguridad.UsuarioBO.getInstance().obtenerUsuarios()
     Response.Write("<table>")
@@ -91,4 +99,3 @@ Else
 End If
     %>
 </asp:Content>
-

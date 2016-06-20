@@ -95,6 +95,25 @@ Public Class BaseDeDatos
         End SyncLock
     End Function
 
+    Friend Overloads Shared Function ejecutarConsulta(consulta As String, conexionBackUp As SqlConnection) As Boolean
+        SyncLock objectS
+            Try
+                Dim sqlCommand As SqlCommand = New SqlCommand(consulta, conexionBackUp)
+                conexionBackUp.Open()
+                Dim acceptRows As Integer = sqlCommand.ExecuteNonQuery()
+                If (acceptRows > 0) Then
+                    Return True
+                Else
+                    Return False
+                End If
+            Catch ex As Exception
+                Return False
+            Finally
+                desconectarBD(conexionBackUp)
+            End Try
+        End SyncLock
+    End Function
+
     Public Shared Function listarConsulta(consulta As String) As DataSet
         SyncLock objectS
             Try
@@ -145,6 +164,68 @@ Public Class BaseDeDatos
                 Return Nothing
             Finally
                 desconectarBD(conexion)
+            End Try
+        End SyncLock
+    End Function
+
+    Public Shared Function realizarBackUp(listaDeBackups As List(Of String)) As Boolean
+        SyncLock objectS
+            Try
+                Dim unidadesDeDisco As String = ""
+                Dim primero As Boolean = True
+                For Each backup In listaDeBackups
+                    If (Not primero) Then
+                        unidadesDeDisco += ", "
+                    End If
+                    unidadesDeDisco += "DISK = N'" & backup & "'"
+                    primero = False
+                Next
+
+                Dim sqlBackUp As String = "BACKUP DATABASE [candybar] TO " _
+                                            & unidadesDeDisco _
+                                            & " WITH NOFORMAT, " _
+                                            & "NOINIT,  " _
+                                            & "NAME = N'backup', " _
+                                            & "SKIP, " _
+                                            & "NOREWIND, " _
+                                            & "NOUNLOAD,  " _
+                                            & "STATS = 10"
+                'ejecuta el backup
+                ejecutarConsulta(sqlBackUp, conexion)
+
+                Return True
+            Catch ex As Exception
+                Return False
+            Finally
+            End Try
+        End SyncLock
+    End Function
+
+    Public Shared Function realizarRestore(listaDeRestores As List(Of String)) As Boolean
+        SyncLock objectS
+            Try
+                Dim unidadesDeDisco As String = ""
+                Dim primero As Boolean = True
+                For Each restore In listaDeRestores
+                    If (Not primero) Then
+                        unidadesDeDisco += ", "
+                    End If
+                    unidadesDeDisco += "DISK = N'" & restore & "'"
+                    primero = False
+                Next
+
+                Dim sqlBackUp As String = "ALTER DATABASE [candybar] SET SINGLE_USER WITH ROLLBACK IMMEDIATE; USE master; RESTORE DATABASE [candybar] FROM " _
+                                            & unidadesDeDisco _
+                                            & " WITH REPLACE, " _
+                                            & "NOUNLOAD,  " _
+                                            & "STATS = 10"
+                'ejecuta el restore
+                ejecutarConsulta(sqlBackUp, conexion)
+
+                Return True
+            Catch ex As Exception
+                Return False
+            Finally
             End Try
         End SyncLock
     End Function

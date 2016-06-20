@@ -30,8 +30,11 @@
     <header>
         <%
             Dim usuarioLogueado As EntidadesDTO.UsuarioDTO = Session.Item("user")
+            Dim nickname As String = ""
             If (usuarioLogueado IsNot Nothing) Then
                 Dim id As Integer = usuarioLogueado.id
+                nickname = usuarioLogueado.nickname.ToUpper() + " -"
+                
                 If (NegocioYSeguridad.PermisoBO.getInstance().usuarioTienePermisoParaAccion(id, "P001_PEDIDOS_ALL")) Then
                     Response.Write("<a href='/Account/Pedidos.aspx'>Pedidos</a> | ")
                 End If
@@ -57,7 +60,7 @@
                     Response.Write("<a href='/Account/Restaurar.aspx'>Restaurar</a> | ")
                 End If
                 If (NegocioYSeguridad.PermisoBO.getInstance().usuarioTienePermisoParaAccion(id, "P008_CONTRASENIAS_ALL")) Then
-                    Response.Write("<a href='/Account/Constrasenias.aspx'>Constraseñas</a> | ")
+                    Response.Write("<a href='/Account/Contrasenias.aspx'>Contraseñas</a> | ")
                 End If
                 If (NegocioYSeguridad.PermisoBO.getInstance().usuarioTienePermisoParaAccion(id, "P010_LOGS_ALL")) Then
                     Response.Write("<a href='/Account/Logs.aspx'>Logs</a> | ")
@@ -67,7 +70,7 @@
             Response.Write("<a href='/Default.aspx'>Inicio</a> | ")
             
             If (usuarioLogueado IsNot Nothing) Then
-                Response.Write("<a href='/Account/Login.aspx?action=exit'>Salir</a>")
+                Response.Write(nickname + " <a href='/Account/Login.aspx?action=exit'>Salir</a>")
             Else
                 Response.Write("<a href='/Account/Login.aspx'>Entrar</a>")
             End If

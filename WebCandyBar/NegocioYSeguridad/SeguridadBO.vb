@@ -7,7 +7,9 @@ Public Class SeguridadBO
 
     Private Shared CADENA_GENERADORA_CONTRASENIAS As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-    Private Shared mensaje As String = ""
+    Private Shared mensajes As New Dictionary(Of String, String)
+
+    Private Shared objectS As Object = {0}
 
     Private Shared _instance As SeguridadBO
 
@@ -108,7 +110,6 @@ Public Class SeguridadBO
 
     'este metodo calcula si hay problemas de dvh sobre una tabla y me devuelve el dvv sumarizado si no hubo problemas sino una exception
     Public Function chequearDVHPorTabla(tabla As String) As Long
-        NegocioYSeguridad.SeguridadBO.guardarMensaje("calculando integridad [tabla: " & tabla & "]...")
         Dim registrosYDVH As Dictionary(Of String, Long) = AccesoADatos.SeguridadDAO.getInstance().buscarDVHYRegistrosPorTabla(camposDVHPorTabla.Item(tabla), tabla)
         Dim dvv As Long = 0
         Dim integridadRespetada As Boolean = True
@@ -116,18 +117,18 @@ Public Class SeguridadBO
             'registro en la bitacora el error de dvh
             BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.ALTA, "Error por dvh en tabla: " & tabla)
             integridadRespetada = False
-            NegocioYSeguridad.SeguridadBO.guardarMensaje("calculando integridad [tabla: " & tabla & " dvh null]...")
+            NegocioYSeguridad.SeguridadBO.guardarMensaje("Error por dvh en tabla: " & tabla)
         Else
             For Each dvh In registrosYDVH
                 Dim dvhAux As Long = obtenerValorDVH(dvh.Key)
                 If (Not compararDVH_DVHAux(dvh.Value, dvhAux)) Then
                     'registro en la bitacora el error de dvh y marco el campo en null para luego ser corregido
                     BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.ALTA, "Error por dvh en tabla: " & tabla & " registro: " & dvh.Key & " <> " & dvh.Value)
+                    NegocioYSeguridad.SeguridadBO.guardarMensaje("Error por dvh en tabla: " & tabla & " registro: " & dvh.Key & " <> " & dvh.Value)
                     AccesoADatos.SeguridadDAO.getInstance().marcarErrorEnDVHPorRegistro(tabla, dvh.Value)
                     integridadRespetada = False
                 End If
                 dvv += dvh.Value
-                NegocioYSeguridad.SeguridadBO.guardarMensaje("calculando integridad [tabla: " & tabla & " dvh:" & dvh.Value & "]...")
             Next
         End If
         If (Not integridadRespetada) Then
@@ -156,15 +157,14 @@ Public Class SeguridadBO
             If (dvvAux = -1) Then
                 integridadRespetada = False
             End If
-            NegocioYSeguridad.SeguridadBO.guardarMensaje("calculando integridad [tabla: " & tabla.Key & " dvv: " & tabla.Value & "]...")
             If (Not compararDVVPorTabla(tabla.Value, dvvAux)) Then
                 'registro en la bitacora el error de dvv y marco el campo en null para luego ser corregido
                 BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.ALTA, "Error por dvv en tabla: " & tabla.Key & " valor: " & tabla.Value)
+                NegocioYSeguridad.SeguridadBO.guardarMensaje("Error por dvv en tabla: " & tabla.Key & " valor: " & tabla.Value)
                 AccesoADatos.SeguridadDAO.getInstance().marcarErrorEnDVVPorTabla(tabla.Key)
                 integridadRespetada = False
             End If
         Next
-        NegocioYSeguridad.SeguridadBO.guardarMensaje("")
         Return integridadRespetada
     End Function
 
@@ -177,7 +177,6 @@ Public Class SeguridadBO
             calcularDVV(tabla.Key)
         Next
         BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.ALTA, "Integridad corregida en la base de datos")
-        NegocioYSeguridad.SeguridadBO.guardarMensaje("")
         Return True
     End Function
 
@@ -240,15 +239,24 @@ Public Class SeguridadBO
     End Function
 
     Public Shared Sub guardarMensaje(msj As String)
-        SyncLock SeguridadBO.mensaje
-            SeguridadBO.mensaje = msj
+        SyncLock objectS
+            Try
+                mensajes.Item(UsuarioBO.getInstance().obtenerUsuarioIdLogueado().ToString()) += " <br> " + msj
+            Catch ex As KeyNotFoundException
+                mensajes.Item(UsuarioBO.getInstance().obtenerUsuarioIdLogueado().ToString()) = msj
+            End Try
         End SyncLock
     End Sub
 
     Public Shared Function obtenerMensaje() As String
         Dim m As String = ""
-        SyncLock SeguridadBO.mensaje
-            m = SeguridadBO.mensaje
+        SyncLock objectS
+            Try
+                m = mensajes.Item(UsuarioBO.getInstance().obtenerUsuarioIdLogueado().ToString())
+                mensajes.Remove(UsuarioBO.getInstance().obtenerUsuarioIdLogueado().ToString())
+            Catch ex As KeyNotFoundException
+                m = "No existen registros de lo sucedido"
+            End Try
         End SyncLock
         Return m
     End Function

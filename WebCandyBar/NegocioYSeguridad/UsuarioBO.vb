@@ -44,7 +44,12 @@ Public Class UsuarioBO
     End Function
 
     Public Function obtenerUsuarioIdLogueado() As Integer
-        Return 1
+        Dim obj As Object = System.Web.HttpContext.Current.Session("user")
+        If (obj IsNot Nothing) Then
+            Return CType(obj, EntidadesDTO.UsuarioDTO).id
+        End If
+
+        Throw New Exceptions.CandyException("Error usuario no logueado")
     End Function
 
     'metodo para agregar usuarios nuevos
@@ -299,6 +304,7 @@ Public Class UsuarioBO
     'cambio un poco la logica respecto al analisis
     Public Function loguearUsuario(nickname As String, password As String) As EntidadesDTO.UsuarioDTO
         Try
+            Dim integridadRespetada As Boolean = True
             Dim passwordEncriptada As String = SeguridadBO.getInstance().encriptar(password, False)
 
             Dim usuarioLogueado As EntidadesDTO.UsuarioDTO = AccesoADatos.UsuarioDAO.getInstance().obtenerUsuario(nickname)
@@ -321,6 +327,10 @@ Public Class UsuarioBO
 
             PermisoBO.getInstance().iniciarPermisos(usuarioLogueado.id)
 
+            System.Web.HttpContext.Current.Session.Add("user", usuarioLogueado)
+
+            integridadRespetada = SeguridadBO.getInstance().chequearIntegridad()
+
             If (usuarioLogueado.intentosIncorrectos = 3 And "NO".Equals(usuarioLogueado.baja) And Not esUsuarioAdministrador(usuarioLogueado.id)) Then
                 'marcar evento en bitacora se bloquea usuario
                 BitacoraBO.getInstance().guardarEvento(usuarioLogueado.id, BitacoraBO.TipoCriticidad.ALTA, "Usuario bloqueado")
@@ -334,6 +344,10 @@ Public Class UsuarioBO
                 Throw New Exceptions.CandyException("Usuario bloqueado")
             ElseIf (contraseniaInvalida) Then
                 Throw New Exceptions.CandyException("Contraseña invalida")
+            End If
+
+            If (Not integridadRespetada) Then
+                Throw New Exceptions.CandyException("Error de [integridad] sobre la base de datos, para mas detalle por favor consulte el reporte de bitacora o al administrador del sistema", True)
             End If
 
             BitacoraBO.getInstance().guardarEvento(usuarioLogueado.id, BitacoraBO.TipoCriticidad.BAJA, "Usuario logueado")

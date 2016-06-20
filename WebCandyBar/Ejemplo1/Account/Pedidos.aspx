@@ -5,9 +5,24 @@
         If (("post".Equals(Request.Form("action")) Or "put".Equals(Request.Form("action"))) Or ("post".Equals(Request.QueryString("action")) Or "put".Equals(Request.QueryString("action")))) Then
             If ("GET".Equals(Request.HttpMethod)) Then
                 Dim pedido As New EntidadesDTO.PedidoDTO()
+                Dim fechaInicio As String = ""
+                Dim fechaEntrega As String = ""
                 If ("put".Equals(Request.QueryString("action"))) Then
                     Dim id As Integer = Integer.Parse(Request.QueryString("id"))
                     pedido = NegocioYSeguridad.PedidoBO.getInstance().obtenerPedidoPorId(id)
+                    
+                    If (pedido.fechaInicio IsNot Nothing) Then
+                        If (Not "".Equals(pedido.fechaInicio)) Then
+                            fechaInicio = pedido.fechaInicio.Split("/")(2) + "-" + pedido.fechaInicio.Split("/")(1) + "-" + pedido.fechaInicio.Split("/")(0)
+                        End If
+                    End If
+                    
+                    If (pedido.fechaEntrega IsNot Nothing) Then
+                        If (Not "".Equals(pedido.fechaEntrega)) Then
+                            fechaEntrega = pedido.fechaEntrega.Split("/")(2) + "-" + pedido.fechaEntrega.Split("/")(1) + "-" + pedido.fechaEntrega.Split("/")(0)
+                        End If
+                    End If
+                    
                 End If
     %>
     <form action="Pedidos.aspx" method="post">
@@ -40,12 +55,12 @@
             <tr>
                 <td>Fecha de Inicio:</td>
                 <td>
-                    <input type="date" name="fechaInicio" value='<%= IIf(pedido IsNot Nothing, pedido.fechaInicio, "")%>'></td>
+                    <input type="date" name="fechaInicio" value='<%= IIf(pedido IsNot Nothing, fechaInicio, "")%>'></td>
             </tr>
             <tr>
                 <td>Fecha de Entrega:</td>
                 <td>
-                    <input type="date" name="fechaEntrega" value='<%= IIf(pedido IsNot Nothing, pedido.fechaEntrega, "")%>'></td>
+                    <input type="date" name="fechaEntrega" value='<%= IIf(pedido IsNot Nothing, fechaEntrega, "")%>'></td>
             </tr>
             <tr>
                 <td>Comentario:</td>
@@ -66,21 +81,43 @@
         pedido.agasajado = Request.Form("agasajado")
         pedido.comboId = Request.Form("comboId")
         pedido.comentario = Request.Form("comentario")
-        pedido.fechaInicio = Request.Form("fechaInicio")
-        pedido.fechaEntrega = Request.Form("fechaEntrega")
-                
-        If (Request.Form("id") IsNot Nothing) Then
-            pedido.id = Integer.Parse(Request.Form("id"))
-            NegocioYSeguridad.PedidoBO.getInstance().actualizarPedido(pedido)
-        Else
-            NegocioYSeguridad.PedidoBO.getInstance().agregarPedido(pedido)
+        
+        Dim f1 As String = Request.Form("fechaInicio")
+        If (f1 IsNot Nothing) Then
+            If (Not "".Equals(f1)) Then
+                Dim f1A As String() = f1.Split("-")
+                pedido.fechaInicio = f1A(2) + "/" + f1A(1) + "/" + f1A(0)
+            End If
         End If
-        Response.Write("Exito! <a href='/Account/Pedidos.aspx'>Volver</a>")
+        
+        Dim f2 As String = Request.Form("fechaEntrega")
+        If (f2 IsNot Nothing) Then
+            If (Not "".Equals(f2)) Then
+                Dim f2A As String() = f2.Split("-")
+                pedido.fechaEntrega = f2A(2) + "/" + f2A(1) + "/" + f2A(0)
+            End If
+        End If
+                
+        Try
+            If (Request.Form("id") IsNot Nothing) Then
+                pedido.id = Integer.Parse(Request.Form("id"))
+                NegocioYSeguridad.PedidoBO.getInstance().actualizarPedido(pedido)
+            Else
+                NegocioYSeguridad.PedidoBO.getInstance().agregarPedido(pedido)
+            End If
+            Response.Write("Exito! <a href='/Account/Pedidos.aspx'>Volver</a>")
+        Catch ex As Exceptions.CandyException
+            Response.Write("Error! " + ex.Message + " <a href='/Account/Pedidos.aspx'>Volver</a>")
+        End Try
     End If
 ElseIf ("delete".Equals(Request.QueryString("action"))) Then
     Dim id As Integer = Integer.Parse(Request.QueryString("id"))
-    NegocioYSeguridad.PedidoBO.getInstance().cancelarPedido(id)
-    Response.Write("Exito! <a href='/Account/Pedidos.aspx'>Volver</a>")
+    Try
+        NegocioYSeguridad.PedidoBO.getInstance().cancelarPedido(id)
+        Response.Write("Exito! <a href='/Account/Pedidos.aspx'>Volver</a>")
+    Catch ex As Exceptions.CandyException
+        Response.Write("Error! " + ex.Message + " <a href='/Account/Pedidos.aspx'>Volver</a>")
+    End Try
 Else
     Dim pedidos As Dictionary(Of String, EntidadesDTO.PedidoDTO) = NegocioYSeguridad.PedidoBO.getInstance().obtenerPedidos()
     Response.Write("<table>")
