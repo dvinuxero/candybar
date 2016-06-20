@@ -38,12 +38,16 @@
             combosDelSistema.Remove(CStr(comboDTO.id))
             combosDelSistema.Add(CStr(comboDTO.id), comboDTO)
 
-            Dim insumosDelCombo As New List(Of String)
-            For Each insumo In comboDTO.insumos.Item(0)
-                Dim cantidad As String = comboDTO.insumos.Item(1).Item(comboDTO.insumos.Item(0).IndexOf(insumo))
-                insumosDelCombo.Add(insumo & ";" & cantidad)
-            Next
-            cachearInsumosPorCombo(comboDTO.id, insumosDelCombo)
+            If (comboDTO.insumos IsNot Nothing) Then
+                If (comboDTO.insumos.Count > 0) Then
+                    Dim insumosDelCombo As New List(Of String)
+                    For Each insumo In comboDTO.insumos.Item(0)
+                        Dim cantidad As String = comboDTO.insumos.Item(1).Item(comboDTO.insumos.Item(0).IndexOf(insumo))
+                        insumosDelCombo.Add(insumo & ";" & cantidad)
+                    Next
+                    cachearInsumosPorCombo(comboDTO.id, insumosDelCombo)
+                End If
+            End If
             '4 se recalculan los digitos verificadores
             SeguridadBO.getInstance().calcularDVH("combo")
             SeguridadBO.getInstance().calcularDVV("combo")
@@ -77,12 +81,16 @@
             combosDelSistema.Remove(CStr(comboDTO.id))
             combosDelSistema.Add(CStr(comboDTO.id), comboDTO)
 
-            Dim insumosDelCombo As New List(Of String)
-            For Each insumo In comboDTO.insumos.Item(0)
-                Dim cantidad As String = comboDTO.insumos.Item(1).Item(comboDTO.insumos.Item(0).IndexOf(insumo))
-                insumosDelCombo.Add(insumo & ";" & cantidad)
-            Next
-            cachearInsumosPorCombo(comboDTO.id, insumosDelCombo)
+            If (comboDTO.insumos IsNot Nothing) Then
+                If (comboDTO.insumos.Count > 0) Then
+                    Dim insumosDelCombo As New List(Of String)
+                    For Each insumo In comboDTO.insumos.Item(0)
+                        Dim cantidad As String = comboDTO.insumos.Item(1).Item(comboDTO.insumos.Item(0).IndexOf(insumo))
+                        insumosDelCombo.Add(insumo & ";" & cantidad)
+                    Next
+                    cachearInsumosPorCombo(comboDTO.id, insumosDelCombo)
+                End If
+            End If
             If (insumosPorCombo IsNot Nothing) Then
                 insumosPorCombo.Remove(COMBO_ID_NUEVO)
             End If

@@ -18,7 +18,11 @@
         Dim ejecutado As Boolean = BaseDeDatos.ejecutarConsulta("update combo set " _
                                                      & "nombre='" & comboDTO.nombre & "', " _
                                                      & "precio='" & comboDTO.precio & "', dvh=null where id=" & comboDTO.id)
-        asociarInsumosAlCombo(comboDTO.id, comboDTO.insumos)
+        If (comboDTO.insumos IsNot Nothing) Then
+            If (comboDTO.insumos.Count > 0) Then
+                asociarInsumosAlCombo(comboDTO.id, comboDTO.insumos)
+            End If
+        End If
         Return ejecutado
     End Function
 
@@ -27,7 +31,11 @@
                                                      & comboDTO.id & ",'" _
                                                      & comboDTO.nombre & "','" _
                                                      & comboDTO.precio & "')")
-        asociarInsumosAlCombo(comboDTO.id, comboDTO.insumos)
+        If (comboDTO.insumos IsNot Nothing) Then
+            If (comboDTO.insumos.Count > 0) Then
+                asociarInsumosAlCombo(comboDTO.id, comboDTO.insumos)
+            End If
+        End If
         Return ejecutado
     End Function
 

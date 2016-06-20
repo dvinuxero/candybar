@@ -1,54 +1,73 @@
 ﻿<%@ Page Title="Administracion de usuarios" Language="VB" MasterPageFile="~/Site.Master" AutoEventWireup="false" CodeBehind="Usuarios.aspx.vb" Inherits="WebCandyBar.Usuarios" %>
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
-<%
-If (("post".Equals(Request.Form("action")) Or "put".Equals(Request.Form("action"))) Or ("post".Equals(Request.QueryString("action")) Or "put".Equals(Request.QueryString("action")))) Then
-    If ("GET".Equals(Request.HttpMethod)) Then
-        Dim usuario As New EntidadesDTO.UsuarioDTO()
-        If ("put".Equals(Request.QueryString("action"))) Then
-                Dim id As Integer = Integer.Parse(Request.QueryString("id"))
-                usuario = NegocioYSeguridad.UsuarioBO.getInstance().obtenerUsuarioPorId(id)
-        End If
-%>
-                <form action="Usuarios.aspx" method="post">
-                    <input type="hidden" name="action" value='<%= IIf("put".Equals(Request.Form("action")) or "put".Equals(Request.QueryString("action")), "put", "post") %>' />
-<%
-                        If (usuario IsNot Nothing and usuario.id <> 0) Then
-                            Response.Write("<input type='hidden' name='id' value='" + usuario.id.ToString() + "' />")
-                        End If
-%>
-                    <table>
-                        <tr><td>Nickname:</td><td><input type="text" name="nickname" value='<%= IIf(usuario IsNot Nothing, usuario.nickname, "")%>' /></td>
-                        <tr><td>Nombre:</td><td><input type="text" name="nombre" value='<%= IIf(usuario IsNot Nothing, usuario.nombre, "")%>' /></td>
-                        <tr><td>Apellido:</td><td><input type="text" name="apellido" value='<%= IIf(usuario IsNot Nothing, usuario.apellido, "")%>' /></td>
-                        <tr><td>Idioma:</td><td>
-                            <select name="lang">
-                                <option value="es">es</option>
-                                <option value="es">pt</option>
-                                <option value="es">en</option>
-                                <option value="es">fr</option>
-                            </select>
-                        </td></tr>
-                        <tr><td><input type="submit" name="guardarUsuario" value="Guardar" /> <a href='/Account/Usuarios.aspx'>Volver</a></td></tr>
-                    </table>
-                </form>
-<%
-    Else
-    Dim usuario As New EntidadesDTO.UsuarioDTO()
-                
-    usuario.nickname = Request.Form("nickname")
-    usuario.nombre = Request.Form("nombre")
-    usuario.apellido = Request.Form("apellido")
-    usuario.lang = Request.Form("lang")
-                
-    If (Request.Form("id") IsNot Nothing) Then
-        usuario.id = Integer.Parse(Request.Form("id"))
-        NegocioYSeguridad.UsuarioBO.getInstance().modificarUsuario(usuario)
-    Else
-        NegocioYSeguridad.UsuarioBO.getInstance().agregarUsuario(usuario)
-    End If
-    Response.Write("Exito! <a href='/Account/Usuarios.aspx'>Volver</a>")
+    <%
+        If (("post".Equals(Request.Form("action")) Or "put".Equals(Request.Form("action"))) Or ("post".Equals(Request.QueryString("action")) Or "put".Equals(Request.QueryString("action")))) Then
+            If ("GET".Equals(Request.HttpMethod)) Then
+                Dim usuario As New EntidadesDTO.UsuarioDTO()
+                If ("put".Equals(Request.QueryString("action"))) Then
+                    Dim id As Integer = Integer.Parse(Request.QueryString("id"))
+                    usuario = NegocioYSeguridad.UsuarioBO.getInstance().obtenerUsuarioPorId(id)
+                End If
+    %>
+    <form action="Usuarios.aspx" method="post">
+        <input type="hidden" name="action" value='<%= IIf("put".Equals(Request.Form("action")) or "put".Equals(Request.QueryString("action")), "put", "post") %>' />
+        <%
+            If (usuario IsNot Nothing And usuario.id <> 0) Then
+                Response.Write("<input type='hidden' name='id' value='" + usuario.id.ToString() + "' />")
             End If
+        %>
+        <table>
+            <tr>
+                <td>Nickname:</td>
+                <td>
+                    <input type="text" name="nickname" value='<%= IIf(usuario IsNot Nothing, usuario.nickname, "")%>' /></td>
+            </tr>
+            <tr>
+                <td>Nombre:</td>
+                <td>
+                    <input type="text" name="nombre" value='<%= IIf(usuario IsNot Nothing, usuario.nombre, "")%>' /></td>
+            </tr>
+            <tr>
+                <td>Apellido:</td>
+                <td>
+                    <input type="text" name="apellido" value='<%= IIf(usuario IsNot Nothing, usuario.apellido, "")%>' /></td>
+            </tr>
+            <tr>
+                <td>Idioma:</td>
+                <td>
+                    <select name="lang">
+                        <option value="es">es</option>
+                        <option value="es">pt</option>
+                        <option value="es">en</option>
+                        <option value="es">fr</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" name="guardarUsuario" value="Guardar" />
+                    <a href='/Account/Usuarios.aspx'>Volver</a></td>
+            </tr>
+        </table>
+    </form>
+    <%
+    Else
+        Dim usuario As New EntidadesDTO.UsuarioDTO()
+                
+        usuario.nickname = Request.Form("nickname")
+        usuario.nombre = Request.Form("nombre")
+        usuario.apellido = Request.Form("apellido")
+        usuario.lang = Request.Form("lang")
+                
+        If (Request.Form("id") IsNot Nothing) Then
+            usuario.id = Integer.Parse(Request.Form("id"))
+            NegocioYSeguridad.UsuarioBO.getInstance().modificarUsuario(usuario)
+        Else
+            NegocioYSeguridad.UsuarioBO.getInstance().agregarUsuario(usuario)
+        End If
+        Response.Write("Exito! <a href='/Account/Usuarios.aspx'>Volver</a>")
+    End If
 ElseIf ("delete".Equals(Request.QueryString("action"))) Then
     Dim id As Integer = Integer.Parse(Request.QueryString("id"))
     Dim usuarioABorrar As EntidadesDTO.UsuarioDTO = NegocioYSeguridad.UsuarioBO.getInstance().obtenerUsuarioPorId(id)
@@ -70,5 +89,6 @@ Else
     Next
     Response.Write("</table>")
 End If
-%>
+    %>
 </asp:Content>
+

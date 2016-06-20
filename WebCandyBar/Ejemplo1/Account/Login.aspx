@@ -7,12 +7,12 @@
         End If
     %>
     <form id="form1" runat="server" method="post" action="Login.aspx">
-    <div>
-    
-        Nickname:<br />
-        <input id="nickname" name="nickname" type="text" /><br />
-        Password:<br />
-        <input id="password" name="password" type="password" /><br />
-        <input id="login" name="login" type="submit" value="Entrar" /></div>
+        <div>
+            Nickname:<br />
+            <input id="nickname" name="nickname" type="text" /><br />
+            Password:<br />
+            <input id="password" name="password" type="password" /><br />
+            <input id="login" name="login" type="submit" value="Entrar" />
+        </div>
     </form>
 </asp:Content>

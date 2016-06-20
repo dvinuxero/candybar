@@ -30,7 +30,7 @@
     <header>
         <%
             Dim usuarioLogueado As EntidadesDTO.UsuarioDTO = Session.Item("user")
-            If (usuarioLogueado Isnot Nothing) Then
+            If (usuarioLogueado IsNot Nothing) Then
                 Dim id As Integer = usuarioLogueado.id
                 If (NegocioYSeguridad.PermisoBO.getInstance().usuarioTienePermisoParaAccion(id, "P001_PEDIDOS_ALL")) Then
                     Response.Write("<a href='/Account/Pedidos.aspx'>Pedidos</a> | ")
