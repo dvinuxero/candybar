@@ -400,6 +400,10 @@ fieldset {
         display: inline;
     }
 
+    input[type=radio] {
+        width: 20px;
+    }
+
     input, textarea {
         border: 1px solid #e2e2e2;
         background: #fff;
