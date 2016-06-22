@@ -105,18 +105,18 @@
             Else
                 NegocioYSeguridad.PedidoBO.getInstance().agregarPedido(pedido)
             End If
-            Response.Write("Exito! <a href='/Account/Pedidos.aspx'>Volver</a>")
+            Response.Write("<div class='exito'>Exito! <a href='/Account/Pedidos.aspx'>Volver</a></div>")
         Catch ex As Exceptions.CandyException
-            Response.Write("Error! " + ex.Message + " <a href='/Account/Pedidos.aspx'>Volver</a>")
+            Response.Write("<div class='error'>Error! " + ex.Message + " <a href='/Account/Pedidos.aspx'>Volver</a></div>")
         End Try
     End If
 ElseIf ("delete".Equals(Request.QueryString("action"))) Then
     Dim id As Integer = Integer.Parse(Request.QueryString("id"))
     Try
         NegocioYSeguridad.PedidoBO.getInstance().cancelarPedido(id)
-        Response.Write("Exito! <a href='/Account/Pedidos.aspx'>Volver</a>")
+        Response.Write("<div class='exito'>Exito! <a href='/Account/Pedidos.aspx'>Volver</a></div>")
     Catch ex As Exceptions.CandyException
-        Response.Write("Error! " + ex.Message + " <a href='/Account/Pedidos.aspx'>Volver</a>")
+        Response.Write("<div class='error'>Error! " + ex.Message + " <a href='/Account/Pedidos.aspx'>Volver</a></div>")
     End Try
 Else
     Dim pedidos As Dictionary(Of String, EntidadesDTO.PedidoDTO) = NegocioYSeguridad.PedidoBO.getInstance().obtenerPedidos()

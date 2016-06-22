@@ -67,9 +67,9 @@
             Else
                 NegocioYSeguridad.UsuarioBO.getInstance().agregarUsuario(usuario)
             End If
-            Response.Write("Exito! <a href='/Account/Usuarios.aspx'>Volver</a>")
+            Response.Write("<div class='exito'>Exito! <a href='/Account/Usuarios.aspx'>Volver</a></div>")
         Catch ex As Exceptions.CandyException
-            Response.Write("Error! " + ex.Message + " <a href='/Account/Usuarios.aspx'>Volver</a>")
+            Response.Write("<div class='error'>Error! " + ex.Message + " <a href='/Account/Usuarios.aspx'>Volver</a></div>")
         End Try
     End If
 ElseIf ("delete".Equals(Request.QueryString("action"))) Then
@@ -77,9 +77,9 @@ ElseIf ("delete".Equals(Request.QueryString("action"))) Then
     Dim usuarioABorrar As EntidadesDTO.UsuarioDTO = NegocioYSeguridad.UsuarioBO.getInstance().obtenerUsuarioPorId(id)
     Try
         NegocioYSeguridad.UsuarioBO.getInstance().eliminarUsuario(usuarioABorrar)
-        Response.Write("Exito! <a href='/Account/Usuarios.aspx'>Volver</a>")
+        Response.Write("<div class='exito'>Exito! <a href='/Account/Usuarios.aspx'>Volver</a></div>")
     Catch ex As Exceptions.CandyException
-        Response.Write("Error! " + ex.Message + " <a href='/Account/Usuarios.aspx'>Volver</a>")
+        Response.Write("<div class='error'>Error! " + ex.Message + " <a href='/Account/Usuarios.aspx'>Volver</a></div>")
     End Try
 Else
     Dim usuarios As Dictionary(Of String, EntidadesDTO.UsuarioDTO) = NegocioYSeguridad.UsuarioBO.getInstance().obtenerUsuarios()

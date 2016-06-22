@@ -48,9 +48,9 @@
             
                 Try
                     NegocioYSeguridad.PermisoBO.getInstance().asociarFamiliasAlUsuario(usuarioId, familiasAsignadas)
-                    Response.Write("Exito! <a href='/Account/Usuarios.aspx'>Volver</a>")
+                    Response.Write("<div class='exito'>Exito! <a href='/Account/Usuarios.aspx'>Volver</a></div>")
                 Catch ex As Exceptions.CandyException
-                    Response.Write("Error! " + ex.Message + " <a href='/Account/Usuarios.aspx'>Volver</a>")
+                    Response.Write("<div class='error'>Error! " + ex.Message + " <a href='/Account/Usuarios.aspx'>Volver</a></div>")
                 End Try
             End If
         
@@ -101,9 +101,9 @@
             Else
                 NegocioYSeguridad.PermisoBO.getInstance().agregarFamilia(familiaId, familiaDesc)
             End If
-            Response.Write("Exito! <a href='/Account/Familias.aspx'>Volver</a>")
+            Response.Write("<div class='exito'>Exito! <a href='/Account/Familias.aspx'>Volver</a></div>")
         Catch ex As Exceptions.CandyException
-            Response.Write("Error! " + ex.Message + " <a href='/Account/Familias.aspx'>Volver</a>")
+            Response.Write("<div class='error'>Error! " + ex.Message + " <a href='/Account/Familias.aspx'>Volver</a></div>")
         End Try
     End If
 ElseIf ("delete".Equals(Request.QueryString("action"))) Then

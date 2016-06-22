@@ -38,9 +38,9 @@
                     Else
                         NegocioYSeguridad.ComboBO.getInstance().agregarCombo(combo)
                     End If
-                    Response.Write("Exito! <a href='/Account/Combos.aspx'>Volver</a>")
+                    Response.Write("<div class='exito'>Exito! <a href='/Account/Combos.aspx'>Volver</a></div>")
                 Catch ex As Exceptions.CandyException
-                    Response.Write("Error! " + ex.Message + " <a href='/Account/Combos.aspx'>Volver</a>")
+                    Response.Write("<div class='error'>Error! " + ex.Message + " <a href='/Account/Combos.aspx'>Volver</a></div>")
                 End Try
             End If
         ElseIf ("delete".Equals(Request.QueryString("action"))) Then
@@ -48,9 +48,9 @@
             Dim comboABorrar As EntidadesDTO.ComboDTO = NegocioYSeguridad.ComboBO.getInstance().obtenerComboPorId(id)
             Try
                 NegocioYSeguridad.ComboBO.getInstance().eliminarCombo(comboABorrar)
-                Response.Write("Exito! <a href='/Account/Combos.aspx'>Volver</a>")
+                Response.Write("<div class='exito'>Exito! <a href='/Account/Combos.aspx'>Volver</a></div>")
             Catch ex As Exceptions.CandyException
-                Response.Write("Error! " + ex.Message + " <a href='/Account/Combos.aspx'>Volver</a>")
+                Response.Write("<div class='error'>Error! " + ex.Message + " <a href='/Account/Combos.aspx'>Volver</a></div>")
             End Try
         Else
             Dim combos As Dictionary(Of String, EntidadesDTO.ComboDTO) = NegocioYSeguridad.ComboBO.getInstance().obtenerCombos()

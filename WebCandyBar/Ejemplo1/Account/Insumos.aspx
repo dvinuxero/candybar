@@ -62,9 +62,9 @@
                 
                 Try
                     NegocioYSeguridad.ComboBO.getInstance().actualizarCombo(combo)
-                    Response.Write("Exito! <a href='/Account/Combos.aspx'>Volver</a>")
+                    Response.Write("<div class='exito'>Exito! <a href='/Account/Combos.aspx'>Volver</a></div>")
                 Catch ex As Exceptions.CandyException
-                    Response.Write("Error! " + ex.Message + " <a href='/Account/Combos.aspx'>Volver</a>")
+                    Response.Write("<div class='error'>Error! " + ex.Message + " <a href='/Account/Combos.aspx'>Volver</a></div>")
                 End Try
             End If
         ElseIf (("post".Equals(Request.Form("action")) Or "put".Equals(Request.Form("action"))) Or ("post".Equals(Request.QueryString("action")) Or "put".Equals(Request.QueryString("action")))) Then
@@ -128,9 +128,9 @@
             Else
                 NegocioYSeguridad.InsumoBO.getInstance().agregarInsumo(insumo)
             End If
-            Response.Write("Exito! <a href='/Account/Insumos.aspx'>Volver</a>")
+            Response.Write("<div class='exito'>Exito! <a href='/Account/Insumos.aspx'>Volver</a></div>")
         Catch ex As Exceptions.CandyException
-            Response.Write("Error! " + ex.Message + " <a href='/Account/Insumos.aspx'>Volver</a>")
+            Response.Write("<div class='error'>Error! " + ex.Message + " <a href='/Account/Insumos.aspx'>Volver</a></div>")
         End Try
     End If
 ElseIf ("delete".Equals(Request.QueryString("action"))) Then
@@ -138,9 +138,9 @@ ElseIf ("delete".Equals(Request.QueryString("action"))) Then
     Dim insumo As EntidadesDTO.InsumoDTO = NegocioYSeguridad.InsumoBO.getInstance().obtenerInsumoPorId(id)
     Try
         NegocioYSeguridad.InsumoBO.getInstance().eliminarInsumo(insumo)
-        Response.Write("Exito! <a href='/Account/Insumos.aspx'>Volver</a>")
+        Response.Write("<div class='exito'>Exito! <a href='/Account/Insumos.aspx'>Volver</a></div>")
     Catch ex As Exceptions.CandyException
-        Response.Write("Error! " + ex.Message + " <a href='/Account/Insumos.aspx'>Volver</a>")
+        Response.Write("<div class='error'>Error! " + ex.Message + " <a href='/Account/Insumos.aspx'>Volver</a></div>")
     End Try
 Else
         Dim insumos As Dictionary(Of String, EntidadesDTO.InsumoDTO) = NegocioYSeguridad.InsumoBO.getInstance().obtenerInsumos()

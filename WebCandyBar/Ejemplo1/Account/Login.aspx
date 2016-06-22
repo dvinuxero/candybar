@@ -3,7 +3,7 @@
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
     <%
         If (Session("error") IsNot Nothing) Then
-            Response.Write(Session("error"))
+            Response.Write("<div class='error'>" + Session("error") + "</div>")
         End If
         
         If (Session("corrupcion") IsNot Nothing) Then
@@ -11,10 +11,10 @@
     <form id="form2" runat="server" method="post" action="Login.aspx">
         <input type="hidden" name="action" value="resolver" />
         <input type="hidden" name="error" value="corrupcion" />
-        <div>
+        <div class="info">
             Al loguearse se resolvera automaticamente el problema de integridad en la base de datos
-            <input id="logAndResolve" name="logAndResolve" type="submit" value="Loguear y resolver" />
         </div>
+        <input id="logAndResolve" name="logAndResolve" type="submit" value="Loguear y resolver" />
     </form>
     <%
     Else

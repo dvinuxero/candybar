@@ -64,9 +64,9 @@
             
                 Try
                     NegocioYSeguridad.PermisoBO.getInstance().asociarPatentesAlUsuario(usuarioId, patentesAsignadas)
-                    Response.Write("Exito! <a href='/Account/Usuarios.aspx'>Volver</a>")
+                    Response.Write("<div class='exito'>Exito! <a href='/Account/Usuarios.aspx'>Volver</a></div>")
                 Catch ex As Exceptions.CandyException
-                    Response.Write("Error! " + ex.Message + " <a href='/Account/Usuarios.aspx'>Volver</a>")
+                    Response.Write("<div class='error'>Error! " + ex.Message + " <a href='/Account/Usuarios.aspx'>Volver</a></div>")
                 End Try
             End If
         
@@ -131,9 +131,9 @@
             
                 Try
                     NegocioYSeguridad.PermisoBO.getInstance().asociarPatentesDeLaFamilia(familiaId, patentesAsignadas)
-                    Response.Write("Exito! <a href='/Account/Familias.aspx'>Volver</a>")
+                    Response.Write("<div class='exito'>Exito! <a href='/Account/Familias.aspx'>Volver</a></div>")
                 Catch ex As Exceptions.CandyException
-                    Response.Write("Error! " + ex.Message + " <a href='/Account/Familias.aspx'>Volver</a>")
+                    Response.Write("<div class='error'>Error! " + ex.Message + " <a href='/Account/Familias.aspx'>Volver</a></div>")
                 End Try
             End If
         Else

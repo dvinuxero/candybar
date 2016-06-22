@@ -31,7 +31,7 @@
                 End If
             End If
             If (sinRestores) Then
-                Response.Write("No existen backups para restaurar <a href='/Default.aspx'>Volver</a>")
+                Response.Write("<div class='info'>No existen backups para restaurar <a href='/Default.aspx'>Volver</a></div>")
             End If
         End If
     %>
