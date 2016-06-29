@@ -32,6 +32,42 @@ body {
     padding: 10px;
 }
 
+.comboTemplate {
+    width: 90%;
+}
+
+.comboExp {
+    float: left;
+    margin: 10px;
+    width: 30%;
+    height: 150px;
+}
+
+.comboExpNombre {
+    color: lightslategray;
+    background-color: lightblue;
+    padding: 10px;
+    text-align: center;
+    font-weight: 900;
+}
+
+.comboExpPrecio {
+    color: #468847;
+    background-color: #DFF0D8;
+    padding: 10px;
+    text-align: center;
+}
+
+.comboExpInsumos {
+}
+
+.comboExpPedir {
+    color: #468847;
+    background-color: #DFF0D8;
+    padding: 10px;
+    text-align: center;
+}
+
 a {
     color: #333;
     outline: none;

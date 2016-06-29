@@ -28,8 +28,10 @@
             '2 insert en la base
             AccesoADatos.PedidoDAO.getInstance().actualizarPedido(pedidoDTO)
             '3 actualizo cache
-            pedidosDelSistema.Remove(CStr(pedidoDTO.id))
-            pedidosDelSistema.Add(CStr(pedidoDTO.id), pedidoDTO)
+            If (pedidosDelSistema IsNot Nothing) Then
+                pedidosDelSistema.Remove(CStr(pedidoDTO.id))
+                pedidosDelSistema.Add(CStr(pedidoDTO.id), pedidoDTO)
+            End If
             BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.MEDIA, "Pedido " & pedidoDTO.id & " actualizado")
             Return True
         Catch exception As Exceptions.CandyException
@@ -44,18 +46,23 @@
 
     Public Function agregarPedido(pedidoDTO As EntidadesDTO.PedidoDTO) As Boolean
         Try
-            If (Not PermisoBO.getInstance().usuarioTienePermisoParaAccion(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), "P17_PEDIDOS_ALTA")) Then
-                Throw New Exceptions.CandyException("Usuario no tiene permiso para agregar pedidos", True)
-            End If
+            'If (Not PermisoBO.getInstance().usuarioTienePermisoParaAccion(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), "P17_PEDIDOS_ALTA")) Then
+            '    Throw New Exceptions.CandyException("Usuario no tiene permiso para agregar pedidos", True)
+            'End If
             '1 valida
             validarParaAgregar(pedidoDTO)
             pedidoDTO.id = AccesoADatos.PedidoDAO.getInstance().obtenerSiguienteID()
             '2 insert en la base
             AccesoADatos.PedidoDAO.getInstance().agregarPedido(pedidoDTO)
             '3 actualizo cache
-            pedidosDelSistema.Remove(CStr(pedidoDTO.id))
-            pedidosDelSistema.Add(CStr(pedidoDTO.id), pedidoDTO)
-            BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.BAJA, "Pedido " & pedidoDTO.id & " agregado")
+            If (pedidosDelSistema IsNot Nothing) Then
+                pedidosDelSistema.Remove(CStr(pedidoDTO.id))
+                pedidosDelSistema.Add(CStr(pedidoDTO.id), pedidoDTO)
+            End If
+            Try
+                BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.BAJA, "Pedido " & pedidoDTO.id & " agregado")
+            Catch ex As Exception
+            End Try
             Return True
         Catch exception As Exceptions.CandyException
             'si hubo errores informativos se muestran
