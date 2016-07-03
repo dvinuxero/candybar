@@ -26,6 +26,7 @@
             Try
                 Dim usuarioLogueado As EntidadesDTO.UsuarioDTO = NegocioYSeguridad.UsuarioBO.getInstance().loguearUsuario(nickname, password)
                 Session.Add("user", usuarioLogueado)
+                Session.Remove("error")
                 Server.Transfer("/Default.aspx")
             Catch ex As Exceptions.CandyException
                 Session.Add("error", ex.Message)

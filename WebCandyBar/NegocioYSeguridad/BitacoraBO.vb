@@ -40,6 +40,22 @@ Public Class BitacoraBO
             Throw New Exceptions.CandyException("Error no se establecieron limites correctos")
         End If
 
+        If (idFrom < AccesoADatos.BitacoraDAO.getInstance().obtenerMinId()) Then
+            idFrom = AccesoADatos.BitacoraDAO.getInstance().obtenerMinId()
+        End If
+
+        If (idFrom > AccesoADatos.BitacoraDAO.getInstance().obtenerMaxId()) Then
+            idFrom = AccesoADatos.BitacoraDAO.getInstance().obtenerMaxId() - 50
+        End If
+
+        If (idTo > AccesoADatos.BitacoraDAO.getInstance().obtenerMaxId()) Then
+            If (idFrom + 50 < AccesoADatos.BitacoraDAO.getInstance().obtenerMaxId()) Then
+                idTo = idFrom + 50
+            Else
+                idTo = AccesoADatos.BitacoraDAO.getInstance().obtenerMaxId()
+            End If
+        End If
+
         Dim logs As Dictionary(Of String, EntidadesDTO.BitacoraDTO) = AccesoADatos.BitacoraDAO.getInstance().obtenerLogs(idFrom, idTo)
 
         For Each log As EntidadesDTO.BitacoraDTO In logs.Values
@@ -48,6 +64,10 @@ Public Class BitacoraBO
         Next
 
         Return logs
+    End Function
+
+    Public Function obtenerMinId() As Integer
+        AccesoADatos.BitacoraDAO.getInstance().obtenerMinId()
     End Function
 
     Public Function getCriticidad(criticidad As TipoCriticidad) As String

@@ -25,7 +25,7 @@ Public Class BitacoraDAO
     End Function
 
     Public Function obtenerLogs(idFrom As Integer, idTo As Integer) As Dictionary(Of String, EntidadesDTO.BitacoraDTO)
-        Dim dataSet As DataSet = BaseDeDatos.listarConsulta("SELECT id, usuario_id, fecha, descripcion, nivel_criticidad FROM bitacora where id > " + idFrom.ToString() + " and id < " + idTo.ToString() + " order by fecha desc")
+        Dim dataSet As DataSet = BaseDeDatos.listarConsulta("SELECT id, usuario_id, fecha, descripcion, nivel_criticidad FROM bitacora where id > " + idFrom.ToString() + " and id < " + idTo.ToString() + " order by fecha asc")
 
         If (dataSet Is Nothing) Then
             Return Nothing
@@ -42,6 +42,14 @@ Public Class BitacoraDAO
             Next
             Return logs
         End If
+    End Function
+
+    Public Function obtenerMinId() As Integer
+        Return BaseDeDatos.ejecutarScalar("select isnull(min(id), 0) from bitacora")
+    End Function
+
+    Public Function obtenerMaxId() As Integer
+        Return BaseDeDatos.ejecutarScalar("select isnull(max(id), 0) from bitacora")
     End Function
 
     Public Function obtenerSiguienteIDBitacora() As Integer

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Entrar a Candy Bar" Language="VB" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Login.aspx.vb" Inherits="WebCandyBar.Login" %>
+﻿<%@ Page Title="Entrar" Language="VB" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Login.aspx.vb" Inherits="WebCandyBar.Login" %>
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
     <%

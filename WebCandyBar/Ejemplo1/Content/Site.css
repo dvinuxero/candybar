@@ -32,6 +32,22 @@ body {
     padding: 10px;
 }
 
+.estado-pendiente {
+    color: red;
+}
+
+.estado-producir {
+    color: orange;
+}
+
+.estado-finalizado {
+    color: blue;
+}
+
+.estado-entregado {
+    color: green;
+}
+
 .comboTemplate {
     width: 90%;
 }
@@ -41,6 +57,7 @@ body {
     margin: 10px;
     width: 30%;
     height: 150px;
+    border: solid 1px black;
 }
 
 .comboExpNombre {

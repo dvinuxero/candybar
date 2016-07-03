@@ -13,6 +13,8 @@ Public Class SeguridadBO
 
     Private Shared _instance As SeguridadBO
 
+    Public Shared VERTICAL_NAME As String = "Candy Bar"
+
     Private Sub New()
         'configuracion de integridad
         'que campos respetar para calcular dvh y dvv
@@ -228,13 +230,26 @@ Public Class SeguridadBO
     'se considera q ya ha sido cambiada la password
     'se envia de manera simulada un mail al usuario, entonces queda guardado en un txt dentro de una carpeta
     Friend Function informarPasswordAlUsuario(usuarioId As Integer, contraseniaNueva As String) As Boolean
-        'Dim directorio As String = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
-        'Dim nickname As String = UsuarioBO.getInstance().obtenerUsuarioPorId(usuarioId).nickname
+        Dim directorio As String = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+        Dim nickname As String = UsuarioBO.getInstance().obtenerUsuarioPorId(usuarioId).nickname
 
-        'Dim writer As New System.IO.StreamWriter(directorio + "/password_" & nickname.ToLower() & ".txt", False)
-        'writer.WriteLine(nickname & " te enviamos la nueva contraseña: " & contraseniaNueva)
-        'writer.Close()
-        'BitacoraBO.getInstance().guardarEvento(usuarioId, BitacoraBO.TipoCriticidad.MEDIA, "Cambio de contraseña")
+        Dim writer As New System.IO.StreamWriter(directorio + "/password_" & nickname.ToLower() & ".txt", False)
+        writer.WriteLine(nickname & " te enviamos la nueva contraseña: " & contraseniaNueva)
+        writer.Close()
+
+        'Dim mail As New MailMessage()
+        'mail.From = New MailAddress(SeguridadBO.VERTICAL_NAME.ToLower.Replace(" ", "") + "@info.com")
+        'mail.[To].Add("deliciasnil@gmail.com")
+        'mail.Subject = "This is an email"
+        'mail.Body = "this is a sample body"
+        'Dim smtp As New SmtpClient("localhost")
+        'Try
+        '    smtp.Send(mail)
+        'Catch exc As Exception
+        '    Throw New Exceptions.CandyException("Error al enviar email", True)
+        'End Try
+
+        BitacoraBO.getInstance().guardarEvento(usuarioId, BitacoraBO.TipoCriticidad.MEDIA, "Cambio de contraseña")
         Return True
     End Function
 

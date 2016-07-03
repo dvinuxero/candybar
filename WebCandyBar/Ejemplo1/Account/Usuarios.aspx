@@ -2,6 +2,7 @@
 
 <asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
     <%
+        
         If (("post".Equals(Request.Form("action")) Or "put".Equals(Request.Form("action"))) Or ("post".Equals(Request.QueryString("action")) Or "put".Equals(Request.QueryString("action")))) Then
             If ("GET".Equals(Request.HttpMethod)) Then
                 Dim usuario As New EntidadesDTO.UsuarioDTO()
@@ -81,6 +82,14 @@ ElseIf ("delete".Equals(Request.QueryString("action"))) Then
     Catch ex As Exceptions.CandyException
         Response.Write("<div class='error'>Error! " + ex.Message + " <a href='/Account/Usuarios.aspx'>Volver</a></div>")
     End Try
+ElseIf ("contrasena".Equals(Request.QueryString("action"))) Then
+    Dim id As Integer = Integer.Parse(Request.QueryString("id"))
+    Try
+        NegocioYSeguridad.UsuarioBO.getInstance().reestablecerContraseña(id)
+        Response.Write("<div class='exito'>Exito! <a href='/Account/Usuarios.aspx'>Volver</a></div>")
+    Catch ex As Exceptions.CandyException
+        Response.Write("<div class='error'>Error! " + ex.Message + " <a href='/Account/Usuarios.aspx'>Volver</a></div>")
+    End Try
 Else
     Dim usuarios As Dictionary(Of String, EntidadesDTO.UsuarioDTO) = NegocioYSeguridad.UsuarioBO.getInstance().obtenerUsuarios()
     Response.Write("<table>")
@@ -92,7 +101,7 @@ Else
         Response.Write("<td>" + usuario.apellido + "</td>")
         Response.Write("<td>" + usuario.lang + "</td>")
         Response.Write("<td>" + usuario.baja + "</td>")
-        Response.Write("<td>" + "<a href='/Account/Usuarios.aspx?action=delete&id=" + usuario.id.ToString() + "'>Borrar</a> " + "<a href='/Account/Usuarios.aspx?action=put&id=" + usuario.id.ToString() + "'>Modificar</a> " + "<a href='/Account/Usuarios.aspx?action=lock&id=" + usuario.id.ToString() + "'>Bloquear</a> " + "<a href='/Account/Patentes.aspx?action=user&id=" + usuario.id.ToString() + "'>Patentes</a> " + "<a href='/Account/Familias.aspx?action=user&id=" + usuario.id.ToString() + "'>Familias</a> " + "</td>")
+        Response.Write("<td>" + "<a href='/Account/Usuarios.aspx?action=delete&id=" + usuario.id.ToString() + "'>Borrar</a> " + "<a href='/Account/Usuarios.aspx?action=put&id=" + usuario.id.ToString() + "'>Modificar</a> " + "<a href='/Account/Usuarios.aspx?action=lock&id=" + usuario.id.ToString() + "'>Bloquear</a> " + "<a href='/Account/Patentes.aspx?action=user&id=" + usuario.id.ToString() + "'>Patentes</a> " + "<a href='/Account/Familias.aspx?action=user&id=" + usuario.id.ToString() + "'>Familias</a> " + "<a href='/Account/Usuarios.aspx?action=contrasena&id=" + usuario.id.ToString() + "'>Reestablecer contraseña</a> " + "</td>")
         Response.Write("</tr>")
     Next
     Response.Write("</table>")

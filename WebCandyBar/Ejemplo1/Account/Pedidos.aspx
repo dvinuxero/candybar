@@ -53,6 +53,19 @@
                     </td>
                 </tr>
             <tr>
+                <td>Estado:</td>
+                <td>
+                    <select name="estado">
+                        <option value="PENDIENTE">PENDIENTE</option>
+                        <%If ("put".Equals(Request.Form("action")) or "put".Equals(Request.QueryString("action"))) Then%>
+                        <option value="PRODUCIR">PRODUCIR</option>
+                        <option value="FINALIZADO">FINALIZADO</option>
+                        <option value="ENTREGADO">ENTREGADO</option>
+                        <%End If%>
+                    </select>
+                </td>
+            </tr>
+            <tr>
                 <td>Fecha de Inicio:</td>
                 <td>
                     <input type="date" name="fechaInicio" value='<%= IIf(pedido IsNot Nothing, fechaInicio, "")%>'></td>
@@ -81,6 +94,7 @@
         pedido.agasajado = Request.Form("agasajado")
         pedido.comboId = Request.Form("comboId")
         pedido.comentario = Request.Form("comentario")
+        pedido.estado = EntidadesDTO.PedidoDTO.setPedidoEstado(Request.Form("estado"))
         
         Dim f1 As String = Request.Form("fechaInicio")
         If (f1 IsNot Nothing) Then
@@ -132,10 +146,13 @@ Else
                 comentarioStr = pedido.comentario
             End If
         End If
+        
+        Dim estado As String = EntidadesDTO.PedidoDTO.getPedidoEstado(pedido.estado)
+        
         Response.Write("<tr>")
         Response.Write("<td>" + pedido.id.ToString() + "</td>")
         Response.Write("<td>" + comboAsignado + "</td>")
-        Response.Write("<td>" + EntidadesDTO.PedidoDTO.getPedidoEstado(pedido.estado) + "</td>")
+        Response.Write("<td><b><div class='estado-" + estado.ToLower() + "'>" + estado + "</div></b></td>")
         Response.Write("<td>" + pedido.fechaEntrega + "</td>")
         Response.Write("<td>" + pedido.agasajado + "</td>")
         Response.Write("<td>" + comentarioStr + "</td>")

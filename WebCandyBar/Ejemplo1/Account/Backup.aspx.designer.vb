@@ -11,5 +11,5 @@ Option Strict On
 Option Explicit On
 
 
-Partial Public Class Contrasenias
+Partial Public Class Backup
 End Class

@@ -183,6 +183,10 @@ Public Class UsuarioBO
 
     'nuevo metodo en el analisis
     Public Function reestablecerContraseña(usuarioId As Integer)
+        If (Not PermisoBO.getInstance().usuarioTienePermisoParaAccion(obtenerUsuarioIdLogueado(), "P06_CONTRASENIA_CAMBIAR")) Then
+            Throw New Exceptions.CandyException("Usuario no tiene permiso para reestablecer contraseña", True)
+        End If
+
         Dim contraseniaSinEncriptar As String = SeguridadBO.getInstance().autogenerarContrasenia()
         Dim contraseniaNueva As String = SeguridadBO.getInstance().encriptar(contraseniaSinEncriptar, False)
         Dim ejecutado As Boolean = AccesoADatos.UsuarioDAO.getInstance().cambiarContrasenia(usuarioId, contraseniaNueva)
@@ -354,6 +358,8 @@ Public Class UsuarioBO
 
             Return usuarioLogueado
         Catch ex As Exception
+            System.Web.HttpContext.Current.Session.Remove("user")
+
             If (TypeOf (ex) Is Exceptions.CandyException) Then
                 Throw ex
             Else
