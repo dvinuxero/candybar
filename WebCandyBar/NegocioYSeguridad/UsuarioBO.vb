@@ -155,31 +155,35 @@ Public Class UsuarioBO
         End Try
     End Function
 
-    'Public Function cambiarContrasenia(contraseniaNueva As String, contraseniaNuevaConfirmada As String) As Boolean
-    '    Dim contraseniaSinEncriptar As String = contraseniaNueva
-    '    If (contraseniaNueva.Equals(contraseniaNuevaConfirmada)) Then
-    '        If (contraseniaNueva.Length <= 20) Then
-    '            contraseniaNueva = SeguridadBO.getInstance().encriptar(contraseniaNueva, False)
-    '            Dim ejecutado As Boolean = AccesoADatos.UsuarioDAO.getInstance().cambiarContrasenia(obtenerUsuarioIdLogueado(), contraseniaNueva)
-    '            If (Not ejecutado) Then
-    '                BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.MEDIA, "Error de validacion al cambiar contrasena")
-    '                Throw New Exceptions.CandyException("Error al modificar la contraseña, vuelva a intentarlo")
-    '            Else
-    '                usuarioLogueado.password = contraseniaNueva
-    '                obtenerUsuarios().Item(CStr(obtenerUsuarioIdLogueado())).password = contraseniaNueva
-    '                SeguridadBO.getInstance().informarPasswordAlUsuario(obtenerUsuarioIdLogueado(), contraseniaSinEncriptar)
-    '                BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.MEDIA, "Contrasena cambiada para el usuario " & usuarioLogueado.id)
-    '                Return ejecutado
-    '            End If
-    '        Else
-    '            BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.MEDIA, "Error de validacion al cambiar contrasena")
-    '            Throw New Exceptions.CandyException("El maximo de caracteres de la contraseña es 20")
-    '        End If
-    '    Else
-    '        BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.MEDIA, "Error de validacion al cambiar contrasena")
-    '        Throw New Exceptions.CandyException("No coinciden las contraseñas por favor reintentar")
-    '    End If
-    'End Function
+    Public Function cambiarContrasenia(actual As String, contraseniaNueva As String, contraseniaNuevaConfirmada As String) As Boolean
+        actual = SeguridadBO.getInstance().encriptar(actual, False)
+        If (Not actual.Equals(obtenerUsuarioPorId(obtenerUsuarioIdLogueado()).password)) Then
+            Throw New Exceptions.CandyException("Error la constraseña actual no coincide")
+        End If
+
+        Dim contraseniaSinEncriptar As String = contraseniaNueva
+        If (contraseniaNueva.Equals(contraseniaNuevaConfirmada)) Then
+            If (contraseniaNueva.Length <= 20) Then
+                contraseniaNueva = SeguridadBO.getInstance().encriptar(contraseniaNueva, False)
+                Dim ejecutado As Boolean = AccesoADatos.UsuarioDAO.getInstance().cambiarContrasenia(obtenerUsuarioIdLogueado(), contraseniaNueva)
+                If (Not ejecutado) Then
+                    BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.MEDIA, "Error de validacion al cambiar contrasena")
+                    Throw New Exceptions.CandyException("Error al modificar la contraseña, vuelva a intentarlo")
+                Else
+                    obtenerUsuarios().Item(CStr(obtenerUsuarioIdLogueado())).password = contraseniaNueva
+                    SeguridadBO.getInstance().informarPasswordAlUsuario(obtenerUsuarioIdLogueado(), contraseniaSinEncriptar)
+                    BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.MEDIA, "Contrasena cambiada para el usuario " & obtenerUsuarioIdLogueado())
+                    Return ejecutado
+                End If
+            Else
+                BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.MEDIA, "Error de validacion al cambiar contrasena")
+                Throw New Exceptions.CandyException("El maximo de caracteres de la contraseña es 20")
+            End If
+        Else
+            BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.MEDIA, "Error de validacion al cambiar contrasena")
+            Throw New Exceptions.CandyException("No coinciden las contraseñas por favor reintentar")
+        End If
+    End Function
 
     'nuevo metodo en el analisis
     Public Function reestablecerContraseña(usuarioId As Integer)
