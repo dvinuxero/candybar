@@ -30,7 +30,7 @@
     </form>
     <br />
     <div class="info">
-        Solicitar ayuda al administrador para cambiar su contraseña <a href="mailto:deliciasnil@gmail.com"><%=NegocioYSeguridad.SeguridadBO.VERTICAL_NAME%></a>
+        Si no recuerda la contraseña actual solicite ayuda al administrador via <a href="mailto:deliciasnil@gmail.com">Email</a>
     </div>
     <%
     Else

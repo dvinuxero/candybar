@@ -27,6 +27,11 @@ Public Class BackUpRestoreBO
     Public Function realizarRestore(listaDeRestores As List(Of String)) As Boolean
         Dim ejecutado As Boolean = AccesoADatos.BaseDeDatos.realizarRestore(listaDeRestores)
         If (ejecutado) Then
+            ComboBO.getInstance().actualizarCache()
+            InsumoBO.getInstance().actualizarCache()
+            PedidoBO.getInstance().actualizarCache()
+            PermisoBO.getInstance().actualizarCache()
+            UsuarioBO.getInstance().actualizarCache()
             BitacoraBO.getInstance().guardarEvento(UsuarioBO.getInstance().obtenerUsuarioIdLogueado(), BitacoraBO.TipoCriticidad.MEDIA, "Restore realizado")
         End If
         Return ejecutado

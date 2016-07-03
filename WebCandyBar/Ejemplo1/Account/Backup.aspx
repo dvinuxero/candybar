@@ -17,6 +17,7 @@
         Else
             
     %>
+    <div class="info">Al realizar backup de la base de datos, se guardara una copia de la misma con la fecha actual para poder utilizarla en una posterior restauracion del sistema</div>
     <form action="Backup.aspx" method="post">
         <input type="hidden" name="action" value='post' />
         <input type="submit" name="realizarBackup" value="Realizar Backup" />

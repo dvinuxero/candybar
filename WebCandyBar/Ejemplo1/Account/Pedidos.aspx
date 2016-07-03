@@ -115,7 +115,43 @@
         Try
             If (Request.Form("id") IsNot Nothing) Then
                 pedido.id = Integer.Parse(Request.Form("id"))
+                
+                Dim estadoAnterior As EntidadesDTO.PedidoDTO.PedidoEstado = NegocioYSeguridad.PedidoBO.getInstance().obtenerPedidoPorId(pedido.id).estado
+                
+                If (Not EntidadesDTO.PedidoDTO.getPedidoEstado(estadoAnterior).Equals(EntidadesDTO.PedidoDTO.getPedidoEstado(pedido.estado))) Then
+                    Select Case pedido.estado
+                        Case EntidadesDTO.PedidoDTO.PedidoEstado.PENDIENTE
+                            If (estadoAnterior = EntidadesDTO.PedidoDTO.PedidoEstado.PRODUCIR) Then
+                                NegocioYSeguridad.PedidoBO.getInstance().pasarPedidoAPendiente(pedido.id)
+                            Else
+                                Throw New Exceptions.CandyException("Error al intentar cambiar de estado el pedido")
+                            End If
+                        
+                        Case EntidadesDTO.PedidoDTO.PedidoEstado.PRODUCIR
+                            If (estadoAnterior = EntidadesDTO.PedidoDTO.PedidoEstado.PENDIENTE) Then
+                                NegocioYSeguridad.PedidoBO.getInstance().producirPedido(pedido.id)
+                            Else
+                                Throw New Exceptions.CandyException("Error al intentar cambiar de estado el pedido")
+                            End If
+                            
+                        Case EntidadesDTO.PedidoDTO.PedidoEstado.FINALIZADO
+                            If (estadoAnterior = EntidadesDTO.PedidoDTO.PedidoEstado.PRODUCIR) Then
+                                NegocioYSeguridad.PedidoBO.getInstance().finalizarPedido(pedido.id)
+                            Else
+                                Throw New Exceptions.CandyException("Error al intentar cambiar de estado el pedido")
+                            End If
+                            
+                        Case EntidadesDTO.PedidoDTO.PedidoEstado.ENTREGADO
+                            If (estadoAnterior = EntidadesDTO.PedidoDTO.PedidoEstado.FINALIZADO) Then
+                                NegocioYSeguridad.PedidoBO.getInstance().entregarPedido(pedido.id)
+                            Else
+                                Throw New Exceptions.CandyException("Error al intentar cambiar de estado el pedido")
+                            End If
+                    End Select
+                End If
+                
                 NegocioYSeguridad.PedidoBO.getInstance().actualizarPedido(pedido)
+                
             Else
                 NegocioYSeguridad.PedidoBO.getInstance().agregarPedido(pedido)
             End If
@@ -134,30 +170,38 @@ ElseIf ("delete".Equals(Request.QueryString("action"))) Then
     End Try
 Else
     Dim pedidos As Dictionary(Of String, EntidadesDTO.PedidoDTO) = NegocioYSeguridad.PedidoBO.getInstance().obtenerPedidos()
+    Dim filtroEstado As String = IIf(Request.QueryString("estado") is Nothing, "", Request.QueryString("estado"))
+    Response.Write("<a href='/Account/Pedidos.aspx?estado=PENDIENTE'>Pendientes</a>")
+    Response.Write("<a href='/Account/Pedidos.aspx?estado=PRODUCIR'>Produciendo</a>")
+    Response.Write("<a href='/Account/Pedidos.aspx?estado=FINALIZADO'>Finalizados</a>")
+    Response.Write("<a href='/Account/Pedidos.aspx?estado=ENTREGADO'>Entregados</a>")
+    Response.Write("<a href='/Account/Pedidos.aspx?'>Todos</a>")
     Response.Write("<table>")
     Response.Write("<tr><td><b>ID</b></td><td><b>COMBO</b></td><td><b>ESTADO</b></td><td><b>FECHA DE ENTREGA</b></td><td><b>AGASAJADO</b></td><td><b>COMENTARIO</b></td><td><b>ACCIONES(<a href='Pedidos.aspx?action=post'>Nuevo</a>)</b></td></tr>")
     For Each pedido As EntidadesDTO.PedidoDTO In pedidos.Values
-        Dim comboAsignado As String = NegocioYSeguridad.ComboBO.getInstance().obtenerComboPorId(pedido.comboId).nombre
-        Dim comentarioStr As String = ""
-        If (pedido.comentario.Length > 0) Then
-            If (pedido.comentario.Length > 40) Then
-                comentarioStr = pedido.comentario.Substring(0, 40) & "..."
-            Else
-                comentarioStr = pedido.comentario
+        If ("".Equals(filtroEstado) Or filtroEstado.Equals(EntidadesDTO.PedidoDTO.getPedidoEstado(pedido.estado))) Then
+            Dim comboAsignado As String = NegocioYSeguridad.ComboBO.getInstance().obtenerComboPorId(pedido.comboId).nombre
+            Dim comentarioStr As String = ""
+            If (pedido.comentario.Length > 0) Then
+                If (pedido.comentario.Length > 40) Then
+                    comentarioStr = pedido.comentario.Substring(0, 40) & "..."
+                Else
+                    comentarioStr = pedido.comentario
+                End If
             End If
+        
+            Dim estado As String = EntidadesDTO.PedidoDTO.getPedidoEstado(pedido.estado)
+        
+            Response.Write("<tr>")
+            Response.Write("<td>" + pedido.id.ToString() + "</td>")
+            Response.Write("<td>" + comboAsignado + "</td>")
+            Response.Write("<td><b><div class='estado-" + estado.ToLower() + "'>" + estado + "</div></b></td>")
+            Response.Write("<td>" + pedido.fechaEntrega + "</td>")
+            Response.Write("<td>" + pedido.agasajado + "</td>")
+            Response.Write("<td>" + comentarioStr + "</td>")
+            Response.Write("<td>" + "<a href='/Account/Pedidos.aspx?action=delete&id=" + pedido.id.ToString() + "'>Borrar</a> " + "<a href='/Account/Pedidos.aspx?action=put&id=" + pedido.id.ToString() + "'>Modificar</a> " + "</td>")
+            Response.Write("</tr>")
         End If
-        
-        Dim estado As String = EntidadesDTO.PedidoDTO.getPedidoEstado(pedido.estado)
-        
-        Response.Write("<tr>")
-        Response.Write("<td>" + pedido.id.ToString() + "</td>")
-        Response.Write("<td>" + comboAsignado + "</td>")
-        Response.Write("<td><b><div class='estado-" + estado.ToLower() + "'>" + estado + "</div></b></td>")
-        Response.Write("<td>" + pedido.fechaEntrega + "</td>")
-        Response.Write("<td>" + pedido.agasajado + "</td>")
-        Response.Write("<td>" + comentarioStr + "</td>")
-        Response.Write("<td>" + "<a href='/Account/Pedidos.aspx?action=delete&id=" + pedido.id.ToString() + "'>Borrar</a> " + "<a href='/Account/Pedidos.aspx?action=put&id=" + pedido.id.ToString() + "'>Modificar</a> " + "</td>")
-        Response.Write("</tr>")
     Next
     Response.Write("</table>")
 End If

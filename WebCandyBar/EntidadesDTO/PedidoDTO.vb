@@ -5,7 +5,6 @@
         PRODUCIR
         FINALIZADO
         ENTREGADO
-        'CANCELADO dejamos este pedido? o se borra directamente de la base de datos
     End Enum
 
     Public id As Integer

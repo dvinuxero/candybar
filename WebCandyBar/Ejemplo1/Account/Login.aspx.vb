@@ -40,6 +40,8 @@
             End Try
         ElseIf ("exit".Equals(Request.QueryString("action"))) Then
             Session.Remove("user")
+            Session.Remove("corrupcion")
+            Session.Remove("error")
             Server.Transfer("/Default.aspx")
         ElseIf ("resolver".Equals(Request.Form("action")) And "corrupcion".Equals(Request.Form("error"))) Then
             Try

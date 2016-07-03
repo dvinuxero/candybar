@@ -308,6 +308,10 @@ Public Class UsuarioBO
         Return PermisoBO.getInstance().tieneTodasLasPatentesEscenciales(usuarioId)
     End Function
 
+    Public Sub actualizarCache()
+        obtenerUsuarios(True)
+    End Sub
+
     'Metodo especializado en realizar el logueo y chequeos importantes antes de iniciar la entrada al sistema
     'cambio un poco la logica respecto al analisis
     Public Function loguearUsuario(nickname As String, password As String) As EntidadesDTO.UsuarioDTO
@@ -344,13 +348,16 @@ Public Class UsuarioBO
                 BitacoraBO.getInstance().guardarEvento(usuarioLogueado.id, BitacoraBO.TipoCriticidad.ALTA, "Usuario bloqueado")
                 usuarioLogueado.baja = "SI"
                 If (Not AccesoADatos.UsuarioDAO.getInstance().bloquearUsuario(usuarioLogueado.id)) Then
+                    System.Web.HttpContext.Current.Session.Remove("user")
                     Throw New Exceptions.CandyException("Error al intentar bloquear el usuario")
                 End If
             End If
 
             If ("SI".Equals(usuarioLogueado.baja)) Then
+                System.Web.HttpContext.Current.Session.Remove("user")
                 Throw New Exceptions.CandyException("Usuario bloqueado")
             ElseIf (contraseniaInvalida) Then
+                System.Web.HttpContext.Current.Session.Remove("user")
                 Throw New Exceptions.CandyException("Contraseña invalida")
             End If
 
@@ -362,8 +369,6 @@ Public Class UsuarioBO
 
             Return usuarioLogueado
         Catch ex As Exception
-            System.Web.HttpContext.Current.Session.Remove("user")
-
             If (TypeOf (ex) Is Exceptions.CandyException) Then
                 Throw ex
             Else
