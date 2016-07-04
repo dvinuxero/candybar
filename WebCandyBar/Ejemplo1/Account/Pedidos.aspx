@@ -55,14 +55,16 @@
             <tr>
                 <td>Estado:</td>
                 <td>
-                    <select name="estado">
-                        <option value="PENDIENTE">PENDIENTE</option>
+                    <table>
                         <%If ("put".Equals(Request.Form("action")) or "put".Equals(Request.QueryString("action"))) Then%>
-                        <option value="PRODUCIR">PRODUCIR</option>
-                        <option value="FINALIZADO">FINALIZADO</option>
-                        <option value="ENTREGADO">ENTREGADO</option>
+                            <tr><td><input type="radio" name="estado" value="PENDIENTE" id="radioPendiente" <%=IIf(pedido.estado = EntidadesDTO.PedidoDTO.PedidoEstado.PENDIENTE, "checked", "")%> /></td><td class="estado-pendiente"><label for="radioPendiente">PENDIENTE</label></td></tr>
+                            <tr><td><input type="radio" name="estado" value="PRODUCIR" id="radioProducir" <%=IIf(pedido.estado = EntidadesDTO.PedidoDTO.PedidoEstado.PRODUCIR, "checked", "")%> /></td><td class="estado-producir"><label for="radioProducir">PRODUCIR</label></td></tr>
+                            <tr><td><input type="radio" name="estado" value="FINALIZADO" id="radioFinalizado" <%=IIf(pedido.estado = EntidadesDTO.PedidoDTO.PedidoEstado.FINALIZADO, "checked", "")%> /></td><td class="estado-finalizado"><label for="radioFinalizado">FINALIZADO</label></td></tr>
+                            <tr><td><input type="radio" name="estado" value="ENTREGADO" id="radioEntregado" <%=IIf(pedido.estado = EntidadesDTO.PedidoDTO.PedidoEstado.ENTREGADO, "checked", "")%> /></td><td class="estado-entregado"><label for="radioEntregado">ENTREGADO</label></td></tr>
+                        <%Else%>
+                            <tr><td><input type="radio" name="estado" value="PENDIENTE" id="radio1" checked/></td><td class="estado-pendiente"><label for="radioPendiente">PENDIENTE</label></td></tr>
                         <%End If%>
-                    </select>
+                    </table>
                 </td>
             </tr>
             <tr>
