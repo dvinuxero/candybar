@@ -1,5 +1,20 @@
 ﻿Imports System.Data.SqlClient
 
+'Pasos para configurar la conexion a la base de datos
+'Instalar candy bar desktop y seguir los pasos de instalacion
+'copiar string de conexion y pegarlo en las settings de esta solucion
+
+'Problemas:
+'Ensamblado de Optimizations: https://www.nuget.org/packages/Microsoft.AspNet.Web.Optimization.WebForms/
+'Correr el PM(package manager de vstudio desde tools e instalarlo )
+'PM> Install-Package
+'id> Microsoft.AspNet.Web.Optimization.WebForms
+
+'Agregar las nuevas patentes al sistema para tener todos los permisos
+'INSERT INTO [candybar].[dbo].[patente]([id],[descripcion]) VALUES('P010_LOGS_ALL','') GO
+'INSERT INTO [candybar].[dbo].[usuario_patente]([usuario_id],[patente_id],[negado],[dvh]) VALUES(1,'P010_LOGS_ALL','NO',1) GO
+'PATENTES: En Site.Master
+
 Public Class BaseDeDatos
 
     'conexion a la base de datos
