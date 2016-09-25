@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="ping">
+        <s:complexType />
+      </s:element>
+      <s:element name="pingResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pingResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="addActionByName">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="addActionByNameResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="addActionByNameResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="addActionByNameAndSteps">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="steps" type="tns:ArrayOfStep" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfStep">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Step" nillable="true" type="tns:Step" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Step">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="text" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="order" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="description" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="addActionByNameAndStepsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="addActionByNameAndStepsResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getActionByName">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getActionByNameResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getActionByNameResult" type="tns:Action" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="Action">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="steps" type="tns:ArrayOfStep" />
+        </s:sequence>
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="pingSoapIn">
+    <wsdl:part name="parameters" element="tns:ping" />
+  </wsdl:message>
+  <wsdl:message name="pingSoapOut">
+    <wsdl:part name="parameters" element="tns:pingResponse" />
+  </wsdl:message>
+  <wsdl:message name="addActionByNameSoapIn">
+    <wsdl:part name="parameters" element="tns:addActionByName" />
+  </wsdl:message>
+  <wsdl:message name="addActionByNameSoapOut">
+    <wsdl:part name="parameters" element="tns:addActionByNameResponse" />
+  </wsdl:message>
+  <wsdl:message name="addActionByNameAndStepsSoapIn">
+    <wsdl:part name="parameters" element="tns:addActionByNameAndSteps" />
+  </wsdl:message>
+  <wsdl:message name="addActionByNameAndStepsSoapOut">
+    <wsdl:part name="parameters" element="tns:addActionByNameAndStepsResponse" />
+  </wsdl:message>
+  <wsdl:message name="getActionByNameSoapIn">
+    <wsdl:part name="parameters" element="tns:getActionByName" />
+  </wsdl:message>
+  <wsdl:message name="getActionByNameSoapOut">
+    <wsdl:part name="parameters" element="tns:getActionByNameResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ASfollowCoreServiceSoap">
+    <wsdl:operation name="ping">
+      <wsdl:input message="tns:pingSoapIn" />
+      <wsdl:output message="tns:pingSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="addActionByName">
+      <wsdl:input message="tns:addActionByNameSoapIn" />
+      <wsdl:output message="tns:addActionByNameSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="addActionByNameAndSteps">
+      <wsdl:input message="tns:addActionByNameAndStepsSoapIn" />
+      <wsdl:output message="tns:addActionByNameAndStepsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="getActionByName">
+      <wsdl:input message="tns:getActionByNameSoapIn" />
+      <wsdl:output message="tns:getActionByNameSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ASfollowCoreServiceSoap" type="tns:ASfollowCoreServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ping">
+      <soap:operation soapAction="http://tempuri.org/ping" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="addActionByName">
+      <soap:operation soapAction="http://tempuri.org/addActionByName" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="addActionByNameAndSteps">
+      <soap:operation soapAction="http://tempuri.org/addActionByNameAndSteps" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getActionByName">
+      <soap:operation soapAction="http://tempuri.org/getActionByName" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ASfollowCoreServiceSoap12" type="tns:ASfollowCoreServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ping">
+      <soap12:operation soapAction="http://tempuri.org/ping" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="addActionByName">
+      <soap12:operation soapAction="http://tempuri.org/addActionByName" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="addActionByNameAndSteps">
+      <soap12:operation soapAction="http://tempuri.org/addActionByNameAndSteps" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getActionByName">
+      <soap12:operation soapAction="http://tempuri.org/getActionByName" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ASfollowCoreService">
+    <wsdl:port name="ASfollowCoreServiceSoap" binding="tns:ASfollowCoreServiceSoap">
+      <soap:address location="http://localhost:2415/services/core/ASfollowCoreService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ASfollowCoreServiceSoap12" binding="tns:ASfollowCoreServiceSoap12">
+      <soap12:address location="http://localhost:2415/services/core/ASfollowCoreService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
