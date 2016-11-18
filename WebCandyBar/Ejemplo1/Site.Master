@@ -73,6 +73,7 @@
                             End If
                         End If
             
+                        Response.Write("<a href='http://localhost:1036/Default.aspx'>Administrar Locales</a> | ")
                         Response.Write("<a href='/Default.aspx'>Inicio</a> | ")
             
                         If (usuarioLogueado IsNot Nothing) Then

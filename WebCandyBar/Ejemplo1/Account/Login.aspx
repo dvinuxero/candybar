@@ -19,7 +19,7 @@
     <%
     Else
     %>
-    <form id="form1" runat="server" method="post" action="Login.aspx">
+    <form id="form1" runat="server">
         <div>
             Nickname:<br />
             <input id="nickname" name="nickname" type="text" /><br />
